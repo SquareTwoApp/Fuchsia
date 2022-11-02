@@ -1,0 +1,5 @@
+mutation InviteMember($organizationId: ObjectId!, $email: String!, $sendInvite: Boolean) {
+  inviteMember(organizationId: $organizationId, email: $email, sendInvite: $sendInvite) {
+    _id
+  }
+}

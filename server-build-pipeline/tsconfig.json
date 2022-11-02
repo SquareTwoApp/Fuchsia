@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.build.json",
+  "compilerOptions": {
+     "experimentalDecorators": true,
+     "rootDir": "./src",
+     "outDir": "./dist"
+  },
+  "include": ["./src/**/*"],
+  "exclude": ["tests", "node_modules", "dist"],
+  "references": [
+    { "path": "../types" }
+  ]
+}

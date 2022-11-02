@@ -1,0 +1,11 @@
+query Me {
+  me {
+    _id,
+    email,
+    userRole
+    organizations {
+      _id
+      name
+    }
+  }
+}

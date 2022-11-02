@@ -1,0 +1,9 @@
+{
+  "name": "@fuchsia/types",
+  "version": "1.0.0",
+  "main": "dist/index",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.8.4"
+  }
+}

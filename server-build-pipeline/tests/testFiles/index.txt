@@ -1,0 +1,164 @@
+import session from 'express-session'
+import connectRedis from 'connect-redis'
+import { REDIS_URL, MONGO_DB_URL, SESSION_SECRET, REDIS_PORT, PORT } from './utils/config'
+import Redis from 'ioredis'
+import { connect } from 'mongoose'
+import { buildSchema } from 'type-graphql'
+import path from 'path'
+import { TypegooseMiddleware } from './utils/typegoose-middleware'
+import { ObjectIdScalar } from './utils/object-id.scalar'
+import { ObjectId } from 'mongodb'
+import { authChecker } from './utils/auth-checker'
+import { ApolloServer } from 'apollo-server-express'
+import http from 'http'
+import express from 'express'
+import cors from 'cors'
+import { v4 as uuid } from 'uuid'
+import cookies from 'cookie-parser'
+import { Container } from 'typedi'
+import fs from 'fs'
+import { RedisPubSub } from 'graphql-redis-subscriptions'
+import { execute, subscribe } from 'graphql'
+import { SubscriptionServer } from 'subscriptions-transport-ws'
+import { GraphQLJSONObject } from 'graphql-type-json'
+import { COOKIE_NAME } from './utils/consts'
+import { graphqlUploadExpress } from 'graphql-upload'
+import { S3Uploader } from './utils/s3-uploader'
+import { AuthenticationResolver } from './Authentication/Authentication.resolver'
+import { UserResolver } from './User/User.resolver'
+import { ToDoResolver } from './ToDo/ToDo.resolver'
+
+(async () => {
+
+  const redisStore = connectRedis(session);
+  const redis = new Redis(`${REDIS_URL}:${REDIS_PORT}`);
+  
+
+  const mongoose = await connect(MONGO_DB_URL, { dbName: "620b132662e5560e44d55a42" });
+  const options = {
+    host: REDIS_URL,
+    port: REDIS_PORT,
+    retryStrategy: (times: number) => {
+      return Math.min(times * 50, 2000);
+    },
+  };
+  const pubSub = new RedisPubSub({
+    publisher: new Redis(options),
+    subscriber: new Redis(options),
+  });  
+  
+  const schema = await buildSchema({
+    resolvers: [
+      AuthenticationResolver,
+      UserResolver,
+      ToDoResolver,
+    ],
+    emitSchemaFile: path.resolve(__dirname, "schema.graphql"),
+    globalMiddlewares: [TypegooseMiddleware],
+    scalarsMap: [
+      { type: ObjectId, scalar: ObjectIdScalar },
+      { type: Object, scalar: GraphQLJSONObject },
+    ],
+    validate: true,
+    authChecker,
+    container: Container,
+    pubSub,
+  });
+  const app = express();
+  app.set("trust proxy", 1);
+
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    })
+  );
+
+  app.use(cookies());
+  app.use(graphqlUploadExpress({ maxFileSize: 20000000, maxFiles: 10 }));
+
+  app.use(
+    session({
+      genid: (req) => uuid(),
+      name: COOKIE_NAME,
+      store: new redisStore({
+        client: redis,
+        disableTouch: true,
+      }),
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
+        httpOnly: true,
+        sameSite: "none", // csrf
+        secure: true,
+        domain:
+          process.env.NODE_ENV === "production" ? "fuschia.com" : undefined,
+      },
+      saveUninitialized: true,
+      secret: SESSION_SECRET,
+      resave: false,
+    })
+  );
+  
+
+  app.get("/project-files/*", async (req, res) => {
+    const fileKey = decodeURI(req.path.replace("/project-files/", ""));
+    const uploader = Container.get(S3Uploader);
+    uploader.getFile(fileKey, res);
+  });
+  
+
+  const apolloServer = new ApolloServer({
+    schema,
+    context: async ({ req, res }: any) => {
+      return {
+        getUser: () => req.user,
+        logout: () => req.logout(),
+        req,
+        res,
+        redis,
+      };
+    },
+  });
+  
+  await apolloServer.start();
+
+  apolloServer.applyMiddleware({
+    app,
+    cors: {
+      origin: "http://localhost:3000",
+      credentials: true,
+    },
+  });
+  
+  const server = http.createServer({}, app);
+
+  server.listen(PORT, () => {
+    console.log(`HTTPS Server is running on port ${PORT}`);
+    new SubscriptionServer(
+      {
+        execute,
+        subscribe,
+        schema,
+        onConnect: async (connectionParams: string) => {
+          const userSession = await redis.get(`sess:${connectionParams}`);
+          console.log(userSession);
+          if (userSession) {
+            const payload = JSON.parse(userSession);
+            console.log(payload);
+
+            return { userId: payload.userId };
+          }
+          return null;
+        },
+      },
+      {
+        server,
+        path: "/subscriptions",
+      }
+    );
+  });
+  app.listen(PORT + 1, () => {
+    console.log(`HTTP Server is running on port ${PORT + 1}`);
+  });
+  
+})().catch((err) => console.error(err)).then(() => console.log('server exited'));

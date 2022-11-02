@@ -1,0 +1,16 @@
+{
+  "name": "fuchsia",
+  "version": "0.0.1",
+  "description": "Workspace for SquareTwo no-code platform",
+  "repository": "git@github.com:SquareTwoApp/Fuchsia.git",
+  "author": "PragmaFlow <steven.mckeown@pragmaflow.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "echo You may want to run this in frontend-builder or backend-builder, not here!"
+  },
+  "workspaces": [
+    "server-build-pipeline",
+    "types"
+  ]
+}

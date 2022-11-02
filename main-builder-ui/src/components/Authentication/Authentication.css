@@ -1,0 +1,28 @@
+.authentication-layout {
+  padding: 0.25em;
+  align-self: center;
+}
+
+.two-col-auth-panel {
+  display: flex;
+  gap: 1em;
+  border-radius: 0.25em;
+  background-color: var(--white);
+  max-width: 768px;
+  margin: 0 auto;
+  margin-top: 2em;
+}
+
+.extra-info {
+  background-color: var(--primary);
+  border-radius: 0.25em;
+  padding: 0.5em;
+  flex: 1;
+  color: var(--white);
+  justify-items: center;
+}
+
+.auth-panel {
+  flex: 2;
+  padding: 0.5em;
+}
