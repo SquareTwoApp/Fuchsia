@@ -9,6 +9,7 @@ import { RegistrationSuccess } from "./components/Authentication/RegistrationSuc
 import { ResetPassword } from "./components/Authentication/ResetPassword";
 import { Dashboard } from "./components/Dashboard";
 import { Organization } from "./components/Organizations/Organization";
+import { CreateProject } from "./components/Projects/CreateProject";
 import { Projects } from "./components/Projects/Projects";
 import { useAuth } from "./hooks/useAuth";
 import { AuthLayout } from "./layouts/AuthLayout";
@@ -52,6 +53,7 @@ export function Router() {
         <Route index element={<Navigate to="/dashboard" />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/projects" element={<Projects />} />
+        <Route path="/projects/new" element={<CreateProject />} />
         <Route path="/organization" element={<Organization />} />
       </Route>
     </Routes>

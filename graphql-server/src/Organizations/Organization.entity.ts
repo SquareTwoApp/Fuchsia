@@ -17,6 +17,10 @@ export class Organization {
     @Property({ required: true })
     name!: string;
 
+    @Field({ nullable: true })
+    @Property()
+    avatar?: string;
+
     @Field(type => User)
     @Property({ ref: 'User', required: true })
     owner!: Ref<User>;
@@ -32,4 +36,8 @@ export class Organization {
     @Field(type => Invitation)
     @Property({ ref: () => Invitation, default: [] })
     invitees!: Ref<Invitation>[];
+
+    @Field((type) => [Project])
+    @Property({ ref: () => Project, default: [] })
+    projects!: Ref<Project>[];
 }

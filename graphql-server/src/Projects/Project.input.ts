@@ -7,6 +7,15 @@ export class ProjectInput {
   @Field()
   projectName!: string;
 
+  @Field()
+  projectDescription!: string;
+
+  @Field((type) => ObjectIdScalar)
+  proprietorType!: ObjectId;
+
+  @Field((type) => ObjectIdScalar)
+  proprietorId!: ObjectId;
+
   @Field((type) => ObjectIdScalar)
   organizationId!: ObjectId;
 }

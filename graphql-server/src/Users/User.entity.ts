@@ -6,6 +6,7 @@ import { Ref } from "../utils/ref-type";
 import { ObjectIdScalar } from "../utils/object-id.scalar";
 import { Invitation } from "../Invitations/Invitation.entity";
 import { Organization } from "../Organizations/Organization.entity";
+import { Project } from "../Projects/Project.entity";
 
 @ObjectType()
 export class User {
@@ -44,4 +45,8 @@ export class User {
 
   @Field((type) => [Invitation])
   invitations?: Invitation[];
+
+  @Field((type) => [Project])
+  @Property({ ref: () => Project, default: [] })
+  projects!: Ref<Project>[];
 }

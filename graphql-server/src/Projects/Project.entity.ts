@@ -22,10 +22,6 @@ export class Project {
   @Property({ required: true })
   projectName!: string;
 
-  @Field((type) => Organization)
-  @Property({ ref: "Organization", required: true })
-  organization!: Ref<Organization>;
-
   @Field((type) => Team)
   @Property({ ref: () => Team, default: [] })
   teams!: Ref<Team>[];

@@ -101,11 +101,10 @@ export function Organization() {
           onClose={handleClose}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">Invite</DialogTitle>
+          <DialogTitle id="form-dialog-title">Setup your new Organization</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              An invitation will be sent to the email you enter inviting them to
-              join your organization
+              
             </DialogContentText>
             <TextField
               autoFocus
@@ -113,7 +112,7 @@ export function Organization() {
               onChange={(e) => setOrgName(e.currentTarget.value)}
               margin="dense"
               id="name"
-              label="Organization name"
+              label="Organization account name"
               fullWidth
             />
           </DialogContent>

@@ -18,7 +18,7 @@ export function NoProjects() {
         variant="contained"
         color="primary"
         startIcon={<Add />}
-        onClick={() => nav(`/courses/new`)}
+        onClick={() => nav(`/projects/new`)}
       >
         Add new project
       </Button>
