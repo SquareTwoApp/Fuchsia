@@ -6,6 +6,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Mail } from "@mui/icons-material";
 import { Panel } from "./Panel";
+import './Authentication.css'
+
 
 export function ForgotPassword() {
   const nav = useNavigate();
@@ -41,52 +43,55 @@ export function ForgotPassword() {
   }, [isLoggedIn, nav]);
 
   return (
-    <Panel
-      rightContent={{
-        title: "Reset password",
-        blurb: "If you already have a code, click below to reset your password",
-        button: {
-          location: '/reset-password',
-          name: 'Reset Password'
-        }
-      }}
-      leftContent={{
-        title: 'Forgot Password',
-        blurb: 'If you have lost your password, enter your email address and we will send instructions on how to reset your password.',
-        links: [
-          {
-            name: (<>
-              <ArrowBack
-                fontSize="small"
-                style={{ verticalAlign: "middle" }}
-              />{" "}
-              Return to Login</>),
-            location: "/login",
-          },
-        ],
-        submitButton: {
-          label: "Submit",
-          onSubmit: formik.handleSubmit,
-          loading: showLoading,
-          disabled: showLoading,
-        },
-        fields: [
-          {
-            props: {
-              sx: { minWidth: "350px" },
-              placeholder: "Email",
-              id: "email",
-              onChange: formik.handleChange,
-              value: formik.values.email,
-              type: "text",
-              color: "secondary",
-              error: !!formik.errors.email,
-              variant: "standard",
-            },
-            startIcon: <Mail sx={{ color: "action.active", mr: 1, my: 0.5 }} />,
+    <div className="ctn">
+
+      <Panel
+        rightContent={{
+          title: "Reset password",
+          blurb: "If you already have a code, click below to reset your password",
+          button: {
+            location: '/reset-password',
+            name: 'Reset Password'
           }
-        ],
-      }}
-    />
+        }}
+        leftContent={{
+          title: 'Forgot Password',
+          blurb: 'If you have lost your password, enter your email address and we will send instructions on how to reset your password.',
+          links: [
+            {
+              name: (<>
+                <ArrowBack
+                  fontSize="small"
+                  style={{ verticalAlign: "middle" }}
+                />{" "}
+                Return to Login</>),
+              location: "/login",
+            },
+          ],
+          submitButton: {
+            label: "Submit",
+            onSubmit: formik.handleSubmit,
+            loading: showLoading,
+            disabled: showLoading,
+          },
+          fields: [
+            {
+              props: {
+                sx: { minWidth: "350px" },
+                placeholder: "Email",
+                id: "email",
+                onChange: formik.handleChange,
+                value: formik.values.email,
+                type: "text",
+                color: "secondary",
+                error: !!formik.errors.email,
+                variant: "standard",
+              },
+              startIcon: <Mail sx={{ color: "action.active", mr: 1, my: 0.5 }} />,
+            }
+          ],
+        }}
+      />
+    </div>
   );
 }

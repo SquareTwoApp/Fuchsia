@@ -26,3 +26,11 @@
   flex: 2;
   padding: 0.5em;
 }
+
+.ctn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 97vh;
+}
