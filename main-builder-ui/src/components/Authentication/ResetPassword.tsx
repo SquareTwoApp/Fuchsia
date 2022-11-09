@@ -6,6 +6,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Tag, Lock, Visibility, VisibilityOff, ArrowBack } from "@mui/icons-material";
 import { Panel } from "./Panel";
+import './Authentication.css'
+
 
 export function ResetPassword() {
   const [searchParams] = useSearchParams();
@@ -23,7 +25,7 @@ export function ResetPassword() {
     }
   }, [isLoggedIn, nav]);
 
-  const {setFieldValue, ...formik} = useFormik({
+  const { setFieldValue, ...formik } = useFormik({
     initialValues: {
       token: "",
       newPassword: "",
@@ -55,98 +57,101 @@ export function ResetPassword() {
   }, [searchParams, setFieldValue]);
 
   return (
-    <Panel
-      rightContent={{
-        title: "Forgot password",
-        blurb:
-          "If you do not have a code yet, click below to have a code emailed to you",
-        button: {
-          location: "/forgot-password",
-          name: "Forgot Password",
-        },
-      }}
-      leftContent={{
-        title: "Reset Password",
-        submitButton: {
-          label: "Reset Password",
-          onSubmit: formik.handleSubmit,
-          loading: loadingChangePassword,
-          disabled: loadingChangePassword,
-        }, 
-        links: [
-          {
-            name: (<>
-              <ArrowBack
-                fontSize="small"
-                style={{ verticalAlign: "middle" }}
-              />{" "}
-              Return to Login</>),
-            location: "/login",
+    <div className="ctn">
+
+      <Panel
+        rightContent={{
+          title: "Forgot password",
+          blurb:
+            "If you do not have a code yet, click below to have a code emailed to you",
+          button: {
+            location: "/forgot-password",
+            name: "Forgot Password",
           },
-        ],
-        fields: [
-          {
-            props: {
-              sx: { minWidth: "350px" },
-              placeholder: "Token",
-              id: "token",
-              onChange: formik.handleChange,
-              value: formik.values.token,
-              type: "text",
-              color: "secondary",
-              error: !!formik.errors.token,
-              variant: "standard",
+        }}
+        leftContent={{
+          title: "Reset Password",
+          submitButton: {
+            label: "Reset Password",
+            onSubmit: formik.handleSubmit,
+            loading: loadingChangePassword,
+            disabled: loadingChangePassword,
+          },
+          links: [
+            {
+              name: (<>
+                <ArrowBack
+                  fontSize="small"
+                  style={{ verticalAlign: "middle" }}
+                />{" "}
+                Return to Login</>),
+              location: "/login",
             },
-            startIcon: <Tag sx={{ color: "action.active", mr: 1, my: 0.5 }} />,
-          },
-          {
-            props: {
-              sx: { minWidth: "350px" },
-              placeholder: "New Password",
-              id: "newPassword",
-              onChange: formik.handleChange,
-              value: formik.values.newPassword,
-              color: "secondary",
-              error: !!formik.errors.newPassword,
-              variant: "standard",
-              type: showPassword ? "text" : "password",
+          ],
+          fields: [
+            {
+              props: {
+                sx: { minWidth: "350px" },
+                placeholder: "Token",
+                id: "token",
+                onChange: formik.handleChange,
+                value: formik.values.token,
+                type: "text",
+                color: "secondary",
+                error: !!formik.errors.token,
+                variant: "standard",
+              },
+              startIcon: <Tag sx={{ color: "action.active", mr: 1, my: 0.5 }} />,
             },
-            startIcon: <Lock sx={{ color: "action.active", mr: 1, my: 0.5 }} />,
-            endIcon: (
-              <IconButton
-                aria-label="toggle password visibility"
-                onClick={(e) => setShowPassword((p) => !p)}
-                onMouseDown={(e) => e.preventDefault()}
-              >
-                {showPassword ? <Visibility /> : <VisibilityOff />}
-              </IconButton>
-            ),
-          },
-          {
-            props: {
-              sx: { minWidth: "350px" },
-              placeholder: "Confirm Password",
-              id: "confirmPassword",
-              onChange: formik.handleChange,
-              value: formik.values.confirmPassword,
-              color: "secondary",
-              error: !!formik.errors.confirmPassword,
-              variant: "standard",
-              type: showConfirmPassword ? "text" : "password",
+            {
+              props: {
+                sx: { minWidth: "350px" },
+                placeholder: "New Password",
+                id: "newPassword",
+                onChange: formik.handleChange,
+                value: formik.values.newPassword,
+                color: "secondary",
+                error: !!formik.errors.newPassword,
+                variant: "standard",
+                type: showPassword ? "text" : "password",
+              },
+              startIcon: <Lock sx={{ color: "action.active", mr: 1, my: 0.5 }} />,
+              endIcon: (
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={(e) => setShowPassword((p) => !p)}
+                  onMouseDown={(e) => e.preventDefault()}
+                >
+                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              ),
             },
-            startIcon: <Lock sx={{ color: "action.active", mr: 1, my: 0.5 }} />,
-            endIcon: (
-              <IconButton
-                aria-label="toggle password visibility"
-                onClick={(e) => setShowConfirmPassword((p) => !p)}
-                onMouseDown={(e) => e.preventDefault()}
-              >
-                {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
-              </IconButton>
-            ),
-          },
-        ],
-      }}
-    />
+            {
+              props: {
+                sx: { minWidth: "350px" },
+                placeholder: "Confirm Password",
+                id: "confirmPassword",
+                onChange: formik.handleChange,
+                value: formik.values.confirmPassword,
+                color: "secondary",
+                error: !!formik.errors.confirmPassword,
+                variant: "standard",
+                type: showConfirmPassword ? "text" : "password",
+              },
+              startIcon: <Lock sx={{ color: "action.active", mr: 1, my: 0.5 }} />,
+              endIcon: (
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={(e) => setShowConfirmPassword((p) => !p)}
+                  onMouseDown={(e) => e.preventDefault()}
+                >
+                  {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              ),
+            },
+          ],
+        }}
+      />
+    </div>
   );
 }

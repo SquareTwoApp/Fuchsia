@@ -56,6 +56,7 @@ export function Panel({ rightContent, leftContent }: IPanel) {
             variant="outlined"
             color="secondary"
             onClick={() => nav(rightContent.button!.location)}
+            style={{ width: '100%', marginTop: 20 }}
           >
             {rightContent.button.name}
           </Button>
@@ -65,14 +66,16 @@ export function Panel({ rightContent, leftContent }: IPanel) {
         <form name="panel-form" onSubmit={leftContent.submitButton.onSubmit}>
           <div className="login-box-container">
             <div className="login-box">
-              {leftContent.title && <h2 className="welcome-text">{ leftContent.title }</h2>}
-          { leftContent.blurb && <p>{leftContent.blurb}</p>}
+              {leftContent.title && <h2 className="welcome-text">{leftContent.title}</h2>}
+              {leftContent.blurb && <p>{leftContent.blurb}</p>}
               {leftContent.fields.map((field, i) => (
-                <Box key={i} sx={{ display: "flex", alignItems: "flex-end" }}>
-                  {field.startIcon}
-                  <TextField {...field.props} />
-                  {field.endIcon}
-                </Box>
+                <div style={{ marginTop: 10, marginBottom: 10 }}>
+                  <Box key={i} sx={{ display: "flex", alignItems: "flex-end" }}>
+                    {field.startIcon}
+                    <TextField {...field.props} />
+                    {field.endIcon}
+                  </Box>
+                </div>
               ))}
               <div
                 style={{
