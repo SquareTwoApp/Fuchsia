@@ -2,7 +2,8 @@ query Me {
   me {
     _id,
     email,
-    userRole
+    userRole,
+    avatar,
     organizations {
       _id
       name

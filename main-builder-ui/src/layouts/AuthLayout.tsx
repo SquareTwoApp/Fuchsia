@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { Dashboard as DashboardIcon, Receipt as ReceiptIcon, Business as BusinessIcon } from '@mui/icons-material'
 import { useMeQuery } from "../generated/graphql";
+import { TopBar } from "./TopBar";
 
 interface MenuItem {
   title: string;
@@ -46,10 +47,12 @@ export const AuthLayout = () => {
   return (
     
     <div style={{ display: 'flex'}}>
+      <TopBar />
       <Drawer
         anchor="left"
         variant="permanent"
         sx={{
+          zIndex: 1,
           width: drawerWidth,
           flexShrink: 0,
           '& .MuiDrawer-paper': {
