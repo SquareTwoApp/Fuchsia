@@ -9,6 +9,8 @@ export function NoProjects() {
   return (
     <div className='centered-box'>
       <img alt="Logo" src={logo} />
+      <div className='testAnim'><div className='testAnim2'></div>
+      </div>
       <Typography variant="h1">Welcome!</Typography>
       <Typography>
         It looks like you have not created any projects yet. Add a project and

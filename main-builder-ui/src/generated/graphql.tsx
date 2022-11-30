@@ -118,7 +118,6 @@ export type Key = {
 export type LoginOutputType = {
   __typename?: 'LoginOutputType';
   sessionId: Scalars['String'];
-  token: Scalars['String'];
 };
 
 export type Mutation = {
@@ -235,10 +234,12 @@ export type MutationUpdateServerVersionArgs = {
 export type Organization = {
   __typename?: 'Organization';
   _id: Scalars['ObjectId'];
+  avatar?: Maybe<Scalars['String']>;
   invitees: Invitation;
   members: Array<User>;
   name: Scalars['String'];
   owner: User;
+  projects: Array<Project>;
   teams: Array<Team>;
 };
 
@@ -251,7 +252,6 @@ export type Project = {
   _id: Scalars['ObjectId'];
   appConfig: AppConfig;
   appId: Scalars['String'];
-  organization: Organization;
   projectName: Scalars['String'];
   serverConfig: ServerConfig;
   teams: Team;
@@ -259,7 +259,10 @@ export type Project = {
 
 export type ProjectInput = {
   organizationId: Scalars['ObjectId'];
+  projectDescription: Scalars['String'];
   projectName: Scalars['String'];
+  proprietorId: Scalars['ObjectId'];
+  proprietorType: Scalars['ObjectId'];
 };
 
 export type Query = {
@@ -318,6 +321,7 @@ export type User = {
   invitations: Array<Invitation>;
   lastLogin?: Maybe<Scalars['DateTime']>;
   organizations: Array<Organization>;
+  projects: Array<Project>;
   status: Scalars['String'];
   userRole: Scalars['String'];
 };
@@ -382,7 +386,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginOutputType', sessionId: string, token: string } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginOutputType', sessionId: string } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -647,7 +651,6 @@ export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   login(email: $email, password: $password) {
     sessionId
-    token
   }
 }
     `;

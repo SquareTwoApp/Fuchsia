@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { Panel } from "./Panel";
 import { useNavigate } from "react-router-dom";
+import './Authentication.css'
 
 export function Logout() {
   const { logout, isLoggedIn, logoutLoading } = useAuth();
@@ -13,21 +14,23 @@ export function Logout() {
   }, [isLoggedIn, logout]);
 
   return (
-    <Panel
-    rightContent={{
-      title: 'Goodbye!',
-      blurb: logoutLoading ? 'Please Wait...' : 'You are now logged out',
-    }}
-    leftContent={{
-      title: 'Logged out',
-      blurb: 'You can now safely close this window',
-      submitButton: {
-        disabled: false,
-        label: 'Return to login',
-        loading: false,
-        onSubmit: () => nav('/login')
-      },
-      fields: []
-    }} />
+    <div className="ctn">
+      <Panel
+        rightContent={{
+          title: 'Goodbye!',
+          blurb: logoutLoading ? 'Please Wait...' : 'You are now logged out',
+        }}
+        leftContent={{
+          title: 'Logged out',
+          blurb: 'You can now safely close this window',
+          submitButton: {
+            disabled: false,
+            label: 'Return to login',
+            loading: false,
+            onSubmit: () => nav('/login')
+          },
+          fields: []
+        }} />
+    </div>
   );
 }

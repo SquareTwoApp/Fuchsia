@@ -99,7 +99,6 @@ type Key {
 
 type LoginOutputType {
   sessionId: String!
-  token: String!
 }
 
 type Mutation {

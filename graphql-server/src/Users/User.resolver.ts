@@ -26,10 +26,8 @@ const passwordRegex =
 
 @ObjectType()
 export class LoginOutputType {
-    @Field()
-    sessionId!: string;
-    @Field()
-    token!: string;
+  @Field()
+  sessionId!: string;
 }
 
 @Service()
@@ -121,7 +119,7 @@ export class UserResolver {
     ctx.req.session.userRole = user.userRole;
     ctx.req.session.userId = user._id;
 
-    return { user, sessionId: ctx.req.session.id };
+    return { sessionId: ctx.req.session.id };
   }
 
   @Mutation(() => Boolean)
@@ -171,7 +169,7 @@ export class UserResolver {
   async forgotPassword(@Arg("email") email: string) {
     throw new Error("Not Implemented");
   }
-  
+
   @FieldResolver(type => [Organization])
   async organizations(@Root() user: User, @Ctx() ctx: Context) {
     const orgs = await OrganizationModel.find({

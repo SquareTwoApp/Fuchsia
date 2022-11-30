@@ -8,9 +8,16 @@
   gap: 1em;
   border-radius: 0.25em;
   background-color: var(--white);
-  max-width: 768px;
+  width: 768px;
   margin: 0 auto;
   margin-top: 2em;
+}
+
+@media (max-width: 799px) {
+  .two-col-auth-panel {
+    width: 90%;
+    flex-direction: column;
+  }
 }
 
 .extra-info {

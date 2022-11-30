@@ -116,7 +116,6 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
         variables: { email: email, password: password },
       })
       if (results.data && results.data.login) {
-        localStorage.setItem("token", results.data.login.token);
         localStorage.setItem("sessionId", results.data.login.sessionId);
         setIsLoggedIn(true)
         setLoginFailed(false)

@@ -14,8 +14,8 @@ export function TopBar() {
   const menuId = "primary-search-account-menu";
   const { logout } = useAuth();
   const anchorRef = useRef<HTMLButtonElement>(null);
-  
-  const handleClose = (event: React.MouseEvent<EventTarget>) => {
+
+  const handleClose = (event: any) => {
     if (
       anchorRef.current &&
       anchorRef.current.contains(event.target as HTMLElement)
@@ -26,7 +26,7 @@ export function TopBar() {
     setOpen(false);
   };
 
-  function handleListKeyDown(event: MouseEvent | TouchEvent) {
+  function handleListKeyDown(event: any) {
     if (event.key === "Tab") {
       event.preventDefault();
       setOpen(false);
@@ -67,10 +67,6 @@ export function TopBar() {
                 </MenuItem>
                 <MenuItem onClick={logout}>Logout</MenuItem>
                 <Divider />
-                <FormControlLabel
-                  control={<Switch checked={viewType} onChange={handleViewType} />}
-                  label="Experimental"
-                />
                 <Divider />
                 <MenuItem>Version: {process.env.REACT_APP_VERSION}</MenuItem>
               </MenuList>
@@ -80,7 +76,7 @@ export function TopBar() {
       )}
     </Popper>
   );
-  
+
   return (
     <>
       <AppBar position="fixed" style={{ zIndex: 1200, backgroundColor: 'grey' }}>
@@ -88,13 +84,13 @@ export function TopBar() {
           <img alt="logo" src={logo} height="30" style={{ marginRight: '15px', cursor: 'pointer' }} onClick={() => nav('/')} />
           <div style={{ flexGrow: 1 }} />
           <div>{me && me.me ? me.me.email : ""}</div>
-          <IconButton
+          {/* <IconButton
             ref={anchorRef}
             edge="end"
             aria-label="account of current user"
             aria-controls={menuId}
             aria-haspopup="true"
-            onClick={handleToggle}
+            onClick={}
             color="inherit"
           >
             {me && me.me && me && me.me.avatar ? (
@@ -102,7 +98,7 @@ export function TopBar() {
             ) : (
               <AccountCircle />
             )}
-          </IconButton>
+          </IconButton> */}
         </Toolbar>
       </AppBar>
     </>
