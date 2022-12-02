@@ -1,0 +1,152 @@
+.anim-ctn {
+  display: flex;
+  padding: 8px 0px 0px 8px;
+  overflow: hidden;
+}
+
+.anim-box,
+.anim-in,
+.anim-in3 {
+  height: 60px;
+  width: 60px;
+  background-color: #f3bc42;
+}
+
+.anim-box {
+  z-index: 1;
+}
+
+.anim-in {
+  background-color: #db0163;
+  position: relative;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+}
+
+.anim-txt,
+.anim-txt2,
+.anim-txt4 {
+  margin-left: 10px;
+  padding-left: 4px;
+  position: relative;
+}
+
+.anim-cover,
+.anim-cover2 {
+  background-color: #fff;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+}
+
+.anim-cover {
+  visibility: hidden;
+}
+
+.anim-in3 {
+  background-color: #db0163;
+  position: relative;
+  z-index: 2;
+  animation: moveBack 0.7s normal 1 0s;
+}
+
+@keyframes moveBack {
+  from {
+    top: 10px;
+    left: 10px;
+  }
+
+  to {
+    top: 0px;
+    left: 0px;
+    transform: rotate(90deg)
+  }
+}
+
+.anim-cover2 {
+  visibility: visible;
+  animation: recover 1s normal 1 0s;
+}
+
+@keyframes recover {
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: 100%
+  }
+}
+
+.anim-ctn:hover .anim-txt {
+  animation: slide 1s normal 1 0s;
+}
+
+@keyframes slide {
+  from {
+    left: -300px;
+  }
+
+  to {
+    left: 0px;
+  }
+}
+
+.anim-ctn:hover .anim-txt4 {
+  animation: squish 1s normal 1 0s;
+}
+
+@keyframes squish {
+  from {
+    scale: 0 1;
+    margin-left: -100px;
+  }
+
+  to {
+    scale: 1;
+    margin-left: 10px;
+  }
+}
+
+.anim-ctn:hover .anim-in {
+  animation: moveit 0.7s normal 1 0s;
+}
+
+.anim-ctn:hover .anim-in3 {
+  animation: moveit 0.7s normal 1 0s forwards;
+}
+
+@keyframes moveit {
+  from {
+    top: 0px;
+    left: 0px;
+    transform: rotate(90deg);
+  }
+
+  to {
+    top: 10px;
+    left: 10px;
+  }
+}
+
+.anim-ctn:hover .anim-cover {
+  visibility: visible;
+  animation: uncover 1s normal 1 0s forwards;
+}
+
+.anim-ctn:hover .anim-cover2 {
+  animation: uncover 1s normal 1 0s forwards;
+}
+
+@keyframes uncover {
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
+}

@@ -3,14 +3,14 @@ import { Add } from "@mui/icons-material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/square-two-logo(50x50).png";
+import LogoAnim from "../Common/LogoAnim";
 
 export function NoProjects() {
   const nav = useNavigate();
   return (
     <div className='centered-box'>
       <img alt="Logo" src={logo} />
-      <div className='testAnim'><div className='testAnim2'></div>
-      </div>
+      <LogoAnim ver={1} />
       <Typography variant="h1">Welcome!</Typography>
       <Typography>
         It looks like you have not created any projects yet. Add a project and
