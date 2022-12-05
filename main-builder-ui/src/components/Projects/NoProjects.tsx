@@ -9,8 +9,8 @@ export function NoProjects() {
   const nav = useNavigate();
   return (
     <div className='centered-box'>
-      <img alt="Logo" src={logo} />
-      <LogoAnim ver={1} />
+      {/* <img alt="Logo" src={logo} /> */}
+      <LogoAnim ver={2} />
       <Typography variant="h1">Welcome!</Typography>
       <Typography>
         It looks like you have not created any projects yet. Add a project and

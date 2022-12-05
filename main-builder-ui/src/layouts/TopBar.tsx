@@ -6,6 +6,7 @@ import { AccountCircle } from "@mui/icons-material";
 import avatar from "react-avatar-edit";
 import { useAuth } from "../hooks/useAuth";
 import React, { useRef } from "react";
+import LogoAnim from "../components/Common/LogoAnim";
 
 export function TopBar() {
   const [open, setOpen] = React.useState(false);
@@ -80,8 +81,12 @@ export function TopBar() {
   return (
     <>
       <AppBar position="fixed" style={{ zIndex: 1200, backgroundColor: 'grey' }}>
+
         <Toolbar>
-          <img alt="logo" src={logo} height="30" style={{ marginRight: '15px', cursor: 'pointer' }} onClick={() => nav('/')} />
+          <div style={{ position: 'absolute', left: 0 }} onClick={() => nav('/')}>
+            <LogoAnim ver={5} label=' ' scale={0.5} bgColor='grey' />
+          </div>
+          {/* <img alt="logo" src={logo} height="30" style={{ marginRight: '15px', cursor: 'pointer' }} onClick={() => nav('/')} /> */}
           <div style={{ flexGrow: 1 }} />
           <div>{me && me.me ? me.me.email : ""}</div>
           {/* <IconButton

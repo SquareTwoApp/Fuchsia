@@ -1,12 +1,13 @@
 .anim-ctn {
   display: flex;
   padding: 8px 0px 0px 8px;
-  overflow: hidden;
+  overflow: hidden, visible;
 }
 
 .anim-box,
 .anim-in,
-.anim-in3 {
+.anim-in3,
+.anim-in5 {
   height: 60px;
   width: 60px;
   background-color: #f3bc42;
@@ -16,7 +17,8 @@
   z-index: 1;
 }
 
-.anim-in {
+.anim-in,
+.anim-in5 {
   background-color: #db0163;
   position: relative;
   top: 10px;
@@ -129,6 +131,20 @@
   to {
     top: 10px;
     left: 10px;
+  }
+}
+
+.anim-ctn:hover .anim-in5 {
+  animation: moveitLong 0.7s linear infinite 0s;
+}
+
+@keyframes moveitLong {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(-180deg);
   }
 }
 

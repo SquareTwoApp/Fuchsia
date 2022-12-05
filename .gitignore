@@ -123,3 +123,4 @@ web-build/
 
 cert/
 component-primitives/public/bundle.js
+.vscode/settings.json
