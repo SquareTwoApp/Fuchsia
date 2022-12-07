@@ -36,8 +36,4 @@ export class Organization {
     @Field(type => Invitation)
     @Property({ ref: () => Invitation, default: [] })
     invitees!: Ref<Invitation>[];
-
-    @Field((type) => [Project])
-    @Property({ ref: () => Project, default: [] })
-    projects!: Ref<Project>[];
 }

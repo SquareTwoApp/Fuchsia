@@ -131,7 +131,6 @@ type Organization {
   members: [User!]!
   name: String!
   owner: User!
-  projects: [Project!]!
   teams: [Team!]!
 }
 
@@ -143,17 +142,17 @@ type Project {
   _id: ObjectId!
   appConfig: AppConfig!
   appId: String!
+  organization: Organization!
   projectName: String!
   serverConfig: ServerConfig!
   teams: Team!
+  users: User!
 }
 
 input ProjectInput {
   organizationId: ObjectId!
   projectDescription: String!
   projectName: String!
-  proprietorId: ObjectId!
-  proprietorType: ObjectId!
 }
 
 type Query {
@@ -193,7 +192,6 @@ type User {
   invitations: [Invitation!]!
   lastLogin: DateTime
   organizations: [Organization!]!
-  projects: [Project!]!
   status: String!
   userRole: String!
 }

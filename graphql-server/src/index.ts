@@ -84,7 +84,7 @@ const cert = fs.readFileSync(path.join(__dirname, "./cert/cert.pem"));
   app.use(json({ limit: "2mb" }));
   app.use(
     cors({
-      origin: APP_ENDPOINT,
+      origin: [APP_ENDPOINT, 'http://localhost:3002'],
       credentials: true,
     })
   );
@@ -136,12 +136,12 @@ const cert = fs.readFileSync(path.join(__dirname, "./cert/cert.pem"));
   apolloServer.applyMiddleware({
     app,
     cors: {
-      origin: APP_ENDPOINT,
+      origin: [APP_ENDPOINT, 'http://localhost:3002'],
       credentials: true,
     },
   });
   const server = https.createServer({ key: key, cert: cert }, app);
-  server.listen(HTTPS_PORT, () => {
+  server.listen(HTTPS_PORT, () => { 
     console.log(`\x1b[36m[Express]\x1b[0m >> HTTPS Server is running on port ${HTTPS_PORT}`);
     new SubscriptionServer(
       {

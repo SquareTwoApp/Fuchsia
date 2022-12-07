@@ -45,8 +45,4 @@ export class User {
 
   @Field((type) => [Invitation])
   invitations?: Invitation[];
-
-  @Field((type) => [Project])
-  @Property({ ref: () => Project, default: [] })
-  projects!: Ref<Project>[];
 }
