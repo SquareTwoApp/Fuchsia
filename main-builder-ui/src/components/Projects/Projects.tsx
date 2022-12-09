@@ -41,7 +41,7 @@ import {
 } from '@mui/icons-material'
 import { NoProjects } from "./NoProjects";
 import { ProjectCard } from "./ProjectCard";
-import { useDeleteProjectMutation, useMeQuery } from "../../generated/graphql";
+import { useDeleteProjectMutation, useListProjectsQuery, useMeQuery } from "../../generated/graphql";
 
 interface ProjectTableRowProps {
   id: string;
@@ -138,7 +138,7 @@ function ProjectView({ viewType, projectAccesses, onDelete }: IProjectViewProp) 
             {projectAccesses.map((projectAccess, index) => (
               <ProjectCard
                 key={index}
-                projectAccess={projectAccess}
+                project={projectAccess}
                 onDelete={onDelete}
               />
             ))}
@@ -164,10 +164,10 @@ function ProjectView({ viewType, projectAccesses, onDelete }: IProjectViewProp) 
             <TableBody>
               {projectAccesses.map((projectAccess) => (
                 <ProjectRow
-                  key={projectAccess.project.id}
-                  project={projectAccess.project}
+                  key={projectAccess._id}
+                  project={projectAccess}
                   onDelete={onDelete}
-                  id={projectAccess.project.id}
+                  id={projectAccess._id}
                 />
               ))}
             </TableBody>
@@ -194,7 +194,7 @@ export function Projects() {
   const [openDeleteProjectDialog, setOpenDeleteProjectDialog] = useState(false);
   const nav = useNavigate();
   const [deleteProject] = useDeleteProjectMutation()
-
+  const { data: projectsData } = useListProjectsQuery()
   useEffect(() => {
     const viewType = localStorage.getItem("projectViewType");
     if (viewType) {
@@ -376,24 +376,24 @@ export function Projects() {
         </div>
       </div>
       <Box>
-        {/* {projectsResults.data.projects &&
-        projectsResults.data.projects.length === 0 ? (
+        {!projectsData?.listProjects ||
+        projectsData.listProjects.length === 0 ? (
           <div>Currently no projects to diplay</div>
         ) : (
           viewType && (
             <ProjectView
               viewType={viewType}
-              projectAccesses={filteredProjects}
+              projectAccesses={projectsData!.listProjects}
               onDelete={(key) => {
-                const project = filteredProjects.find(
-                  (fc) => fc.project.id === key
+                const project = projectsData!.listProjects.find(
+                  (fc) => fc._id === key
                 );
-                setProjectToDelete(project!.project);
+                setProjectToDelete(project);
                 setOpenDeleteProjectDialog(true);
               }}
             />
           )
-        )} */}
+        )}
       </Box>
 
       <Dialog

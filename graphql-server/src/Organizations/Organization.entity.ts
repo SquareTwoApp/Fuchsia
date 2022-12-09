@@ -7,6 +7,7 @@ import { Project } from "../Projects/Project.entity";
 import { ObjectIdScalar } from "../utils/object-id.scalar";
 import { Team } from "../Teams/Team.entity";
 import { Invitation } from "../Invitations/Invitation.entity";
+import { NotContains } from "class-validator";
 
 @ObjectType()
 export class Organization {
@@ -14,8 +15,16 @@ export class Organization {
     readonly _id!: ObjectId;
 
     @Field()
-    @Property({ required: true })
+    @Property({ required: true, unique: true })
     name!: string;
+    
+    @Field()
+    @Property({ required: true, unique: true })
+    urlSlug!: string;
+
+    @Field()
+    @Property({ required: true })
+    isPersonal!: boolean;
 
     @Field({ nullable: true })
     @Property()
@@ -36,8 +45,4 @@ export class Organization {
     @Field(type => Invitation)
     @Property({ ref: () => Invitation, default: [] })
     invitees!: Ref<Invitation>[];
-
-    @Field((type) => [Project])
-    @Property({ ref: () => Project, default: [] })
-    projects!: Ref<Project>[];
 }

@@ -18,9 +18,17 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "paths": {
+      "@fuchsia/types": ["../types/src"],
+      "@fuchsia/shared-components": ["../shared-components/src"]
+    }
   },
   "include": [
     "src"
+  ],
+  "references": [
+    { "path": "../types" },
+    { "path": "../shared-components" }
   ]
 }

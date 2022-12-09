@@ -8,8 +8,10 @@ import { Register } from "./components/Authentication/Register";
 import { RegistrationSuccess } from "./components/Authentication/RegistrationSuccessful";
 import { ResetPassword } from "./components/Authentication/ResetPassword";
 import { Dashboard } from "./components/Dashboard";
+import { CreateOrganization } from "./components/Organizations/CreateOrganization";
 import { Organization } from "./components/Organizations/Organization";
 import { Profile } from "./components/Profile";
+import { Organizations } from "./components/Organizations/Organizations";
 import { CreateProject } from "./components/Projects/CreateProject";
 import { Projects } from "./components/Projects/Projects";
 import { useAuth } from "./hooks/useAuth";
@@ -55,8 +57,10 @@ export function Router() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/projects/new" element={<CreateProject />} />
-        <Route path="/organization" element={<Organization />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/organizations" element={<Organizations />} />
+        <Route path="/organization/create" element={<CreateOrganization />} />
+        <Route path="/organization/:organizationId" element={<Organization />} />
       </Route>
     </Routes>
   );

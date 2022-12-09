@@ -79,20 +79,6 @@ export const AuthLayout = () => {
               </ListItem>
             ))}
           </List>
-          <Divider />
-          <List>
-            <ListItem
-              selected={activeRoute("/organization")}
-              button
-              component={RouterLink}
-              to="/organization"
-            >
-              <ListItemIcon>
-                <BusinessIcon />
-              </ListItemIcon>
-              <ListItemText primary="Organization" />
-            </ListItem>
-          </List>
         </div>
       </Drawer>
       <Box 

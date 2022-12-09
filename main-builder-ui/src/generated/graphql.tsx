@@ -29,7 +29,10 @@ export type Api = {
 
 export type AppConfig = {
   __typename?: 'AppConfig';
+  _id: Scalars['ObjectId'];
   appEntryComponentId?: Maybe<Scalars['ObjectId']>;
+  description: Scalars['String'];
+  name: Scalars['String'];
   variables: Array<AppVariable>;
 };
 
@@ -203,6 +206,7 @@ export type MutationLoginArgs = {
 
 
 export type MutationRegisterArgs = {
+  displayName: Scalars['String'];
   email: Scalars['String'];
   password: Scalars['String'];
 };
@@ -228,6 +232,7 @@ export type MutationUpdateProjectArgs = {
 export type MutationUpdateServerVersionArgs = {
   projectId: Scalars['ObjectId'];
   sandbox: Scalars['Boolean'];
+  serverConfigId: Scalars['ObjectId'];
   version: Scalars['String'];
 };
 
@@ -236,11 +241,12 @@ export type Organization = {
   _id: Scalars['ObjectId'];
   avatar?: Maybe<Scalars['String']>;
   invitees: Invitation;
+  isPersonal: Scalars['Boolean'];
   members: Array<User>;
   name: Scalars['String'];
   owner: User;
-  projects: Array<Project>;
   teams: Array<Team>;
+  urlSlug: Scalars['String'];
 };
 
 export type OrganizationInput = {
@@ -250,19 +256,19 @@ export type OrganizationInput = {
 export type Project = {
   __typename?: 'Project';
   _id: Scalars['ObjectId'];
-  appConfig: AppConfig;
+  appConfig: Array<AppConfig>;
   appId: Scalars['String'];
+  organization: Organization;
   projectName: Scalars['String'];
-  serverConfig: ServerConfig;
-  teams: Team;
+  serverConfig: Array<ServerConfig>;
+  teams: Array<Team>;
+  users: Array<User>;
 };
 
 export type ProjectInput = {
   organizationId: Scalars['ObjectId'];
   projectDescription: Scalars['String'];
   projectName: Scalars['String'];
-  proprietorId: Scalars['ObjectId'];
-  proprietorType: Scalars['ObjectId'];
 };
 
 export type Query = {
@@ -279,6 +285,7 @@ export type Query = {
 
 export type QueryGetDockerhubVersionsArgs = {
   projectId: Scalars['ObjectId'];
+  serverConfigId: Scalars['ObjectId'];
 };
 
 
@@ -293,10 +300,13 @@ export type QueryInvitationArgs = {
 
 export type ServerConfig = {
   __typename?: 'ServerConfig';
+  _id: Scalars['ObjectId'];
   apiConfig: Api;
   authConfig: Auth;
+  description: Scalars['String'];
   ec2InstanceId?: Maybe<Scalars['String']>;
   ec2PublicDns?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
   version: Scalars['String'];
 };
 
@@ -318,17 +328,20 @@ export type User = {
   avatar?: Maybe<Scalars['String']>;
   displayName?: Maybe<Scalars['String']>;
   email: Scalars['String'];
+  favorites: Array<Scalars['ObjectId']>;
+  hidden: Array<Scalars['ObjectId']>;
   invitations: Array<Invitation>;
   lastLogin?: Maybe<Scalars['DateTime']>;
   organizations: Array<Organization>;
-  projects: Array<Project>;
   status: Scalars['String'];
   userRole: Scalars['String'];
 };
 
 export type UserInput = {
   email: Scalars['String'];
+  favorites?: InputMaybe<Array<Scalars['ObjectId']>>;
   fullName?: InputMaybe<Scalars['String']>;
+  hidden?: InputMaybe<Array<Scalars['ObjectId']>>;
 };
 
 export type DeleteInvitationMutationVariables = Exact<{
@@ -348,12 +361,36 @@ export type InviteMemberMutationVariables = Exact<{
 
 export type InviteMemberMutation = { __typename?: 'Mutation', inviteMember: { __typename?: 'Invitation', _id: any } };
 
+export type CreateOrganizationMutationVariables = Exact<{
+  organization: OrganizationInput;
+}>;
+
+
+export type CreateOrganizationMutation = { __typename?: 'Mutation', createOrganization: { __typename?: 'Organization', _id: any, name: string, urlSlug: string } };
+
+export type ListOrganizationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ListOrganizationsQuery = { __typename?: 'Query', listOrganizations: Array<{ __typename?: 'Organization', _id: any, name: string, avatar?: string | null, isPersonal: boolean }> };
+
+export type CreateProjectMutationVariables = Exact<{
+  project: ProjectInput;
+}>;
+
+
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'Project', _id: any } };
+
 export type DeleteProjectMutationVariables = Exact<{
   projectId: Scalars['ObjectId'];
 }>;
 
 
 export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject: any };
+
+export type ListProjectsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ListProjectsQuery = { __typename?: 'Query', listProjects: Array<{ __typename?: 'Project', _id: any, projectName: string, appConfig: Array<{ __typename?: 'AppConfig', _id: any, name: string, description: string }>, serverConfig: Array<{ __typename?: 'ServerConfig', _id: any, name: string, description: string }> }> };
 
 export type ServerVersionNumberQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -378,7 +415,7 @@ export type ForgotPasswordMutation = { __typename?: 'Mutation', forgotPassword: 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', _id: any, email: string, userRole: string, organizations: Array<{ __typename?: 'Organization', _id: any, name: string }> } | null };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', _id: any, email: string, userRole: string, avatar?: string | null, displayName?: string | null, favorites: Array<any>, hidden: Array<any>, organizations: Array<{ __typename?: 'Organization', _id: any, name: string }> } | null };
 
 export type LoginMutationVariables = Exact<{
   email: Scalars['String'];
@@ -396,6 +433,7 @@ export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 export type RegisterMutationVariables = Exact<{
   email: Scalars['String'];
   password: Scalars['String'];
+  displayName: Scalars['String'];
 }>;
 
 
@@ -408,6 +446,13 @@ export type ResetPasswordMutationVariables = Exact<{
 
 
 export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword: boolean };
+
+export type UpdateMeMutationVariables = Exact<{
+  userInput: UserInput;
+}>;
+
+
+export type UpdateMeMutation = { __typename?: 'Mutation', updateMe: { __typename?: 'User', _id: any, email: string, userRole: string, avatar?: string | null, displayName?: string | null, favorites: Array<any>, hidden: Array<any>, organizations: Array<{ __typename?: 'Organization', _id: any, name: string }> } };
 
 
 export const DeleteInvitationDocument = gql`
@@ -481,6 +526,111 @@ export function useInviteMemberMutation(baseOptions?: Apollo.MutationHookOptions
 export type InviteMemberMutationHookResult = ReturnType<typeof useInviteMemberMutation>;
 export type InviteMemberMutationResult = Apollo.MutationResult<InviteMemberMutation>;
 export type InviteMemberMutationOptions = Apollo.BaseMutationOptions<InviteMemberMutation, InviteMemberMutationVariables>;
+export const CreateOrganizationDocument = gql`
+    mutation CreateOrganization($organization: OrganizationInput!) {
+  createOrganization(organization: $organization) {
+    _id
+    name
+    urlSlug
+  }
+}
+    `;
+export type CreateOrganizationMutationFn = Apollo.MutationFunction<CreateOrganizationMutation, CreateOrganizationMutationVariables>;
+
+/**
+ * __useCreateOrganizationMutation__
+ *
+ * To run a mutation, you first call `useCreateOrganizationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOrganizationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOrganizationMutation, { data, loading, error }] = useCreateOrganizationMutation({
+ *   variables: {
+ *      organization: // value for 'organization'
+ *   },
+ * });
+ */
+export function useCreateOrganizationMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrganizationMutation, CreateOrganizationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateOrganizationMutation, CreateOrganizationMutationVariables>(CreateOrganizationDocument, options);
+      }
+export type CreateOrganizationMutationHookResult = ReturnType<typeof useCreateOrganizationMutation>;
+export type CreateOrganizationMutationResult = Apollo.MutationResult<CreateOrganizationMutation>;
+export type CreateOrganizationMutationOptions = Apollo.BaseMutationOptions<CreateOrganizationMutation, CreateOrganizationMutationVariables>;
+export const ListOrganizationsDocument = gql`
+    query ListOrganizations {
+  listOrganizations {
+    _id
+    name
+    avatar
+    isPersonal
+  }
+}
+    `;
+
+/**
+ * __useListOrganizationsQuery__
+ *
+ * To run a query within a React component, call `useListOrganizationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListOrganizationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListOrganizationsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListOrganizationsQuery(baseOptions?: Apollo.QueryHookOptions<ListOrganizationsQuery, ListOrganizationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListOrganizationsQuery, ListOrganizationsQueryVariables>(ListOrganizationsDocument, options);
+      }
+export function useListOrganizationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListOrganizationsQuery, ListOrganizationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListOrganizationsQuery, ListOrganizationsQueryVariables>(ListOrganizationsDocument, options);
+        }
+export type ListOrganizationsQueryHookResult = ReturnType<typeof useListOrganizationsQuery>;
+export type ListOrganizationsLazyQueryHookResult = ReturnType<typeof useListOrganizationsLazyQuery>;
+export type ListOrganizationsQueryResult = Apollo.QueryResult<ListOrganizationsQuery, ListOrganizationsQueryVariables>;
+export const CreateProjectDocument = gql`
+    mutation CreateProject($project: ProjectInput!) {
+  createProject(project: $project) {
+    _id
+  }
+}
+    `;
+export type CreateProjectMutationFn = Apollo.MutationFunction<CreateProjectMutation, CreateProjectMutationVariables>;
+
+/**
+ * __useCreateProjectMutation__
+ *
+ * To run a mutation, you first call `useCreateProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProjectMutation, { data, loading, error }] = useCreateProjectMutation({
+ *   variables: {
+ *      project: // value for 'project'
+ *   },
+ * });
+ */
+export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOptions<CreateProjectMutation, CreateProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, options);
+      }
+export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
+export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
+export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
 export const DeleteProjectDocument = gql`
     mutation DeleteProject($projectId: ObjectId!) {
   deleteProject(projectId: $projectId)
@@ -512,6 +662,51 @@ export function useDeleteProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProjectMutation>;
 export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
 export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
+export const ListProjectsDocument = gql`
+    query ListProjects {
+  listProjects {
+    _id
+    projectName
+    appConfig {
+      _id
+      name
+      description
+    }
+    serverConfig {
+      _id
+      name
+      description
+    }
+  }
+}
+    `;
+
+/**
+ * __useListProjectsQuery__
+ *
+ * To run a query within a React component, call `useListProjectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListProjectsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListProjectsQuery(baseOptions?: Apollo.QueryHookOptions<ListProjectsQuery, ListProjectsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListProjectsQuery, ListProjectsQueryVariables>(ListProjectsDocument, options);
+      }
+export function useListProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListProjectsQuery, ListProjectsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListProjectsQuery, ListProjectsQueryVariables>(ListProjectsDocument, options);
+        }
+export type ListProjectsQueryHookResult = ReturnType<typeof useListProjectsQuery>;
+export type ListProjectsLazyQueryHookResult = ReturnType<typeof useListProjectsLazyQuery>;
+export type ListProjectsQueryResult = Apollo.QueryResult<ListProjectsQuery, ListProjectsQueryVariables>;
 export const ServerVersionNumberDocument = gql`
     query ServerVersionNumber {
   serverVersionNumber
@@ -613,6 +808,10 @@ export const MeDocument = gql`
     _id
     email
     userRole
+    avatar
+    displayName
+    favorites
+    hidden
     organizations {
       _id
       name
@@ -712,8 +911,8 @@ export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
 export const RegisterDocument = gql`
-    mutation Register($email: String!, $password: String!) {
-  register(email: $email, password: $password) {
+    mutation Register($email: String!, $password: String!, $displayName: String!) {
+  register(email: $email, password: $password, displayName: $displayName) {
     email
   }
 }
@@ -735,6 +934,7 @@ export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, Regis
  *   variables: {
  *      email: // value for 'email'
  *      password: // value for 'password'
+ *      displayName: // value for 'displayName'
  *   },
  * });
  */
@@ -777,3 +977,46 @@ export function useResetPasswordMutation(baseOptions?: Apollo.MutationHookOption
 export type ResetPasswordMutationHookResult = ReturnType<typeof useResetPasswordMutation>;
 export type ResetPasswordMutationResult = Apollo.MutationResult<ResetPasswordMutation>;
 export type ResetPasswordMutationOptions = Apollo.BaseMutationOptions<ResetPasswordMutation, ResetPasswordMutationVariables>;
+export const UpdateMeDocument = gql`
+    mutation UpdateMe($userInput: UserInput!) {
+  updateMe(userInput: $userInput) {
+    _id
+    email
+    userRole
+    avatar
+    displayName
+    favorites
+    hidden
+    organizations {
+      _id
+      name
+    }
+  }
+}
+    `;
+export type UpdateMeMutationFn = Apollo.MutationFunction<UpdateMeMutation, UpdateMeMutationVariables>;
+
+/**
+ * __useUpdateMeMutation__
+ *
+ * To run a mutation, you first call `useUpdateMeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMeMutation, { data, loading, error }] = useUpdateMeMutation({
+ *   variables: {
+ *      userInput: // value for 'userInput'
+ *   },
+ * });
+ */
+export function useUpdateMeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMeMutation, UpdateMeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateMeMutation, UpdateMeMutationVariables>(UpdateMeDocument, options);
+      }
+export type UpdateMeMutationHookResult = ReturnType<typeof useUpdateMeMutation>;
+export type UpdateMeMutationResult = Apollo.MutationResult<UpdateMeMutation>;
+export type UpdateMeMutationOptions = Apollo.BaseMutationOptions<UpdateMeMutation, UpdateMeMutationVariables>;

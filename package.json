@@ -11,6 +11,9 @@
   },
   "workspaces": [
     "server-build-pipeline",
-    "types"
+    "server-builder-ui",
+    "main-builder-ui",
+    "types",
+    "shared-components"
   ]
 }

@@ -8,7 +8,8 @@ import { ObjectIdScalar } from "../../utils/object-id.scalar";
 import { Context } from "../../types";
 import axios from 'axios'
 import { DOCKERHUB_PASSWORD, DOCKERHUB_USERNAME } from "../../utils/config";
-import { ProjectModel } from "../../Models";
+import { ProjectModel, ServerConfigModel } from "../../Models";
+import { ServerConfig } from "./ServerConfig.entity";
 
 
 export interface Tag {
@@ -43,6 +44,7 @@ export class ServerConfigResolver {
   @Query(returns => [String])
   async getDockerhubVersions(
     @Arg("projectId", (type) => ObjectIdScalar) projectId: ObjectId,
+    @Arg("serverConfigId", (type) => ObjectIdScalar) serverConfigId: ObjectId,
     @Ctx() ctx: Context
   ) {
     if (
@@ -78,6 +80,7 @@ export class ServerConfigResolver {
   @Mutation(returns => Boolean)
   async updateServerVersion(
     @Arg("projectId", (type) => ObjectIdScalar) projectId: ObjectId,
+    @Arg("serverConfigId", (type) => ObjectIdScalar) serverConfigId: ObjectId,
     @Arg("sandbox") sandbox: boolean,
     @Arg("version") version: string,
     @Ctx() ctx: Context
@@ -88,9 +91,10 @@ export class ServerConfigResolver {
     ) {
       throw new ApolloError("Unauthorized");
     }
-    const project = await ProjectModel.findById(projectId)
-    if (project) {
-      const response = await axios.post(`http://${project.serverConfig.ec2PublicDns}:3005/graphql`, {
+    console.warn('SECURITY RISK: Check serverConfigId')
+    const serverConfig = await ServerConfigModel.findById(serverConfigId)
+    if (serverConfig) {
+      const response = await axios.post(`http://${serverConfig.ec2PublicDns}:3005/graphql`, {
         operationName: 'UpdateServerVersion',
         query: `
           mutation UpdateServerVersion {

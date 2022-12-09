@@ -4,6 +4,9 @@ query Me {
     email,
     userRole,
     avatar,
+    displayName,
+    favorites
+    hidden
     organizations {
       _id
       name

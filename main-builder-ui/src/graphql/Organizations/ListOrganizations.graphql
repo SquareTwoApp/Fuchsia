@@ -1,0 +1,8 @@
+query ListOrganizations {
+  listOrganizations {
+    _id
+    name
+    avatar
+    isPersonal
+  }
+}

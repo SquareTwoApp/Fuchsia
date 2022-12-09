@@ -19,11 +19,12 @@ import { useNavigate } from "react-router-dom";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { useFormik } from "formik";
 import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator'
+import { useCreateProjectMutation, useListOrganizationsQuery } from '../../generated/graphql'
 import * as Yup from "yup";
-const organizations = [] as any[]
 export function CreateProject() {
   const nav = useNavigate();
-
+  const [createProject] = useCreateProjectMutation()
+  const { data: organizationData } = useListOrganizationsQuery()
   const [images, setImages] = useState<Array<{ id: string; image: string }>>(
     []
   );
@@ -43,15 +44,23 @@ export function CreateProject() {
       name: "",
       description: "",
       image: "",
-      template: "",
-      proprietorId: "ME",
-      proprietorType: "USER"
+      template: "undefined",
+      ownerId: ""
     },
     validationSchema: Yup.object({
       name: Yup.string().required()
     }),
     onSubmit: (values) => {
-      console.log(values)
+      createProject({
+        variables: {
+          project: {
+            organizationId: values.ownerId,
+            projectDescription: values.description,
+            projectName: values.name
+          },
+        },
+      });
+      nav(`/projects`);
     }
   })
   // const imageResults = useAuthQuery(getImages, {
@@ -108,34 +117,38 @@ export function CreateProject() {
           <CardContent>
             <Grid container spacing={3}>
               {
-                organizations.length > 1 ? (
-                  <Grid item xs={12}>
-                    <Select<string>
+                organizationData && organizationData.listOrganizations ? (
+                  <Grid item xs={3}>
+                  <FormControl fullWidth>
+                    <InputLabel id="select-owner-label">Owner</InputLabel>
+                    <Select
                       variant="outlined"
-
-                      value={formik.values.proprietorId}
+                      fullWidth
+                      id="ownerId"
+                      labelId="select-owner-label"
+                      label="Owner"
                       onChange={e => {
                         formik.handleChange(e)
-                        setFieldValue('proprietorType', (e.target as HTMLInputElement).dataset.type)
+                        const newValue = (e.target as HTMLInputElement).value
+                        setFieldValue('ownerId', newValue)
                       }}
+                      value={formik.values.ownerId}
                     >
-                      <MenuItem data-type="user" value={1} key={1}>
-                        ME
-                      </MenuItem>
                       {
-                        organizations.map(organization => (
-                          <MenuItem data-type="organization" value={organization.id} key={organization.id}>
+                        organizationData.listOrganizations.map(organization => (
+                          <MenuItem data-type="organization" value={organization._id} key={organization._id}>
                             {organization.name}
                           </MenuItem>
                         ))
                       }
                     </Select>
-                  </Grid>
+                  </FormControl>
+                </Grid>
                 ) : (
                   <></>
                 )
               }
-              <Grid item xs={12} md={8}>
+              <Grid item xs={9} md={8}>
                 <TextField
                   fullWidth
                   id="name"
@@ -200,9 +213,16 @@ export function CreateProject() {
                     id="template"
                     labelId="select-template-label"
                     label="Template"
-                    onChange={formik.handleChange}
+                    onChange={e => {
+                      formik.handleChange(e)
+                      const newValue = (e.target as HTMLInputElement).value
+                      setFieldValue('template', newValue)
+                    }}
                     value={formik.values.template}
                   >
+                    <MenuItem value={"undefined"}>
+                      None
+                    </MenuItem>
                     {templates.map(
                       (template: {
                         id: string;
@@ -229,18 +249,7 @@ export function CreateProject() {
               variant="contained"
               color="primary"
               onClick={() => {
-                // createProject({
-                //   variables: {
-                //     organizationId: currentOrganization?.id,
-                //     projectDetails: {
-                //       name: projectName,
-                //       projectCode,
-                //       imageId: projectImage,
-                //     },
-                //     templateId: projectTemplate,
-                //   },
-                // });
-                nav(`/projects`);
+                formik.submitForm()
               }}
             >
               Create

@@ -7,7 +7,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import { useRegisterMutation } from "../../generated/graphql";
-import { Mail, Visibility, VisibilityOff, Lock } from "@mui/icons-material";
+import { Mail, Visibility, VisibilityOff, Lock, VerifiedUser } from "@mui/icons-material";
 import { Panel } from "./Panel";
 import './Authentication.css'
 
@@ -22,6 +22,7 @@ export function Register() {
   const { status, setStatus, ...formik } = useFormik({
     initialValues: {
       email: "",
+      displayName: "",
       password: "",
       confirmPassword: "",
     },
@@ -30,12 +31,14 @@ export function Register() {
         .email("Invalid email address")
         .required("Email required"),
       password: Yup.string().required("No password provided"),
+      displayName: Yup.string().required("Display name required"),
     }),
     onSubmit: (values) => {
       register({
         variables: {
           email: values.email,
-          password: values.password
+          password: values.password,
+          displayName: values.displayName
         }
       });
     },
@@ -65,8 +68,6 @@ export function Register() {
 
   return (
     <div className="ctn">
-
-
       <Panel
         rightContent={{
           title: "Welcome",
@@ -98,6 +99,20 @@ export function Register() {
                 variant: "standard",
               },
               startIcon: <Mail sx={{ color: "action.active", mr: 1, my: 0.5 }} />,
+            },
+            {
+              props: {
+                sx: { minWidth: "350px" },
+                placeholder: "Display Name",
+                id: "displayName",
+                onChange: formik.handleChange,
+                value: formik.values.displayName,
+                type: "text",
+                color: "secondary",
+                error: !!formik.errors.displayName,
+                variant: "standard",
+              },
+              startIcon: <VerifiedUser sx={{ color: "action.active", mr: 1, my: 0.5 }} />,
             },
             {
               props: {

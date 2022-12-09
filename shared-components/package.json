@@ -1,0 +1,18 @@
+{
+  "name": "@fuchsia/shared-components",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mui/material": "^5.10.13",
+    "@types/react": "^18.0.25",
+    "react": "^18.2.0",
+    "typescript": "^4.8.4"
+  },
+  "scripts": {
+    "build": "tsc --build --verbose",
+    "dev": "tsc -w"
+  }
+}

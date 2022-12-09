@@ -9,7 +9,7 @@ import { ObjectId } from "mongoose";
 export interface Request extends ExpressRequest {
   session: Session & Partial<{
     email: string,
-    userId: ObjectId,
+    userId: string,
     userRole: UserRole,
     data?: {
       token: string,
