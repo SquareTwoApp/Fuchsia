@@ -9,6 +9,7 @@ import { RegistrationSuccess } from "./components/Authentication/RegistrationSuc
 import { ResetPassword } from "./components/Authentication/ResetPassword";
 import { Dashboard } from "./components/Dashboard";
 import { Organization } from "./components/Organizations/Organization";
+import { Profile } from "./components/Profile";
 import { CreateProject } from "./components/Projects/CreateProject";
 import { Projects } from "./components/Projects/Projects";
 import { useAuth } from "./hooks/useAuth";
@@ -55,6 +56,7 @@ export function Router() {
         <Route path="/projects" element={<Projects />} />
         <Route path="/projects/new" element={<CreateProject />} />
         <Route path="/organization" element={<Organization />} />
+        <Route path="/profile" element={<Profile />} />
       </Route>
     </Routes>
   );

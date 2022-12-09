@@ -3,13 +3,15 @@ import React, { useEffect, useState } from 'react'
 import AvatarLoader from 'react-avatar-edit'
 import { AccountCircle } from '@mui/icons-material'
 import { useMutation } from "@apollo/client"
-import { User } from '../generated/graphql'
+import { useMeQuery, User } from '../generated/graphql'
 
-export function Profile() { 
+export function Profile() {
   const [showImageModal, setShowImageModal] = useState(false)
   const [preview, setPreview] = useState<string>('')
   const [myInfo, setMyInfo] = useState<User>()
-  
+  const { data: me } = useMeQuery()
+
+
   const handleClose = () => {
     setShowImageModal(false)
   }
@@ -24,7 +26,7 @@ export function Profile() {
       <Grid container spacing={3}>
         <Grid item xs={4}>
           <Card>
-              <CardContent>
+            <CardContent style={{}}>
               <IconButton onClick={() => setShowImageModal(true)}>
                 <AccountCircle style={{ height: '250px', width: '250px' }} />
               </IconButton>
@@ -37,35 +39,38 @@ export function Profile() {
         <Grid item xs={8}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-          <Card>
-            <CardHeader
-            title="Profile" />
-            <CardContent>
-              <Grid container spacing={3}>
-                <Grid item xs={4}>
-                  <TextField />
-                </Grid>
-                <Grid item xs={8}>
-                  <TextField />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                  InputProps={{ readOnly: true }}
-                  fullWidth
-                  variant="outlined"
-                  label="Email Address"
-                  value={myInfo.email}
-                  />
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
+              <Card>
+                <CardHeader
+                  title="Profile" />
+                <CardContent>
+                  <Grid container spacing={3}>
+                    <Grid item xs={4}>
+                      <TextField
+                        label="Name" />
+                    </Grid>
+                    <Grid item xs={8}>
+                      <TextField
+                        label="Position" />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        InputProps={{ readOnly: true }}
+                        fullWidth
+                        variant="outlined"
+                        label="Email Address"
+                        value={myInfo.email}
+                      // value={me && me.me ? me.me.email : ""}
+                      />
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12}>
+              <Card style={{ minHeight: '250px' }}>
+              </Card>
+            </Grid>
           </Grid>
-          <Grid item xs={12}>
-        <Card style={{ minHeight: '250px'}}>
-        </Card>
-      </Grid>
-      </Grid>
         </Grid>
       </Grid>
       <Dialog maxWidth="md" open={showImageModal} onClose={handleClose}>

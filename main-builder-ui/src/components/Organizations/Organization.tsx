@@ -89,6 +89,9 @@ export function Organization() {
   if (me && me.me && me.me.organizations.length === 0) {
     return (
       <div>
+        <Typography variant="h1">
+          Organizations
+        </Typography>
         You are not a member of an organization, either create one now, or have
         an organization owner invite you to theirs.
         <div>
@@ -104,7 +107,7 @@ export function Organization() {
           <DialogTitle id="form-dialog-title">Setup your new Organization</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              
+
             </DialogContentText>
             <TextField
               autoFocus
@@ -138,27 +141,27 @@ export function Organization() {
         <Typography variant="h1">
           Organization profile
         </Typography>
-          <Select
+        <Select
           variant="outlined"
 
-            value={currentOrganization?._id}
-            onChange={e => {
-              const { value } = e.target
-              const organization = me?.me?.organizations?.find(org => org._id === value)
-              if (organization) {
-                setCurrentOrganization(organization)
-                // currenOrganizationIdVar(organization.id)
-              }
-            }}
-          >
-            {
-              me && me.me && me.me.organizations?.map(organization => (
-                <MenuItem value={organization._id} key={organization._id}>
-                  {organization.name}
-                </MenuItem>
-              ))
+          value={currentOrganization?._id}
+          onChange={e => {
+            const { value } = e.target
+            const organization = me?.me?.organizations?.find(org => org._id === value)
+            if (organization) {
+              setCurrentOrganization(organization)
+              // currenOrganizationIdVar(organization.id)
             }
-          </Select>
+          }}
+        >
+          {
+            me && me.me && me.me.organizations?.map(organization => (
+              <MenuItem value={organization._id} key={organization._id}>
+                {organization.name}
+              </MenuItem>
+            ))
+          }
+        </Select>
         <Button
           onClick={(e) => {
             // createNewOrganization({

@@ -88,14 +88,15 @@ export function TopBar() {
           </div>
           {/* <img alt="logo" src={logo} height="30" style={{ marginRight: '15px', cursor: 'pointer' }} onClick={() => nav('/')} /> */}
           <div style={{ flexGrow: 1 }} />
-          <div>{me && me.me ? me.me.email : ""}</div>
+          <AccountCircle onClick={() => { nav("/profile") }} />
+          <div style={{ marginLeft: 8 }}>{me && me.me ? me.me.email : ""}</div>
           {/* <IconButton
             ref={anchorRef}
             edge="end"
             aria-label="account of current user"
             aria-controls={menuId}
             aria-haspopup="true"
-            onClick={}
+            onClick={ }
             color="inherit"
           >
             {me && me.me && me && me.me.avatar ? (
