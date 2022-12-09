@@ -13,7 +13,10 @@ type Api {
 }
 
 type AppConfig {
+  _id: ObjectId!
   appEntryComponentId: ObjectId
+  description: String!
+  name: String!
   variables: [AppVariable!]!
 }
 
@@ -114,11 +117,11 @@ type Mutation {
   inviteMember(email: String!, organizationId: ObjectId!, sendInvite: Boolean): Invitation!
   login(email: String!, password: String!): LoginOutputType!
   logout: Boolean!
-  register(email: String!, password: String!): User!
+  register(displayName: String!, email: String!, password: String!): User!
   resetPassword(newPassword: String!, token: String!): Boolean!
   updateMe(userInput: UserInput!): User!
   updateProject(project: UpdateProjectInput!, projectId: ObjectId!): Project!
-  updateServerVersion(projectId: ObjectId!, sandbox: Boolean!, version: String!): Boolean!
+  updateServerVersion(projectId: ObjectId!, sandbox: Boolean!, serverConfigId: ObjectId!, version: String!): Boolean!
 }
 
 """Mongo object id scalar type"""
@@ -128,10 +131,12 @@ type Organization {
   _id: ObjectId!
   avatar: String
   invitees: Invitation!
+  isPersonal: Boolean!
   members: [User!]!
   name: String!
   owner: User!
   teams: [Team!]!
+  urlSlug: String!
 }
 
 input OrganizationInput {
@@ -140,13 +145,13 @@ input OrganizationInput {
 
 type Project {
   _id: ObjectId!
-  appConfig: AppConfig!
+  appConfig: [AppConfig!]!
   appId: String!
   organization: Organization!
   projectName: String!
-  serverConfig: ServerConfig!
-  teams: Team!
-  users: User!
+  serverConfig: [ServerConfig!]!
+  teams: [Team!]!
+  users: [User!]!
 }
 
 input ProjectInput {
@@ -156,7 +161,7 @@ input ProjectInput {
 }
 
 type Query {
-  getDockerhubVersions(projectId: ObjectId!): [String!]!
+  getDockerhubVersions(projectId: ObjectId!, serverConfigId: ObjectId!): [String!]!
   getProject(projectId: ObjectId!): Project!
   invitation(invitationId: ObjectId!): Invitation!
   listOrganizations: [Organization!]!
@@ -166,10 +171,13 @@ type Query {
 }
 
 type ServerConfig {
+  _id: ObjectId!
   apiConfig: Api!
   authConfig: Auth!
+  description: String!
   ec2InstanceId: String
   ec2PublicDns: String
+  name: String!
   version: String!
 }
 
@@ -189,6 +197,8 @@ type User {
   avatar: String
   displayName: String
   email: String!
+  favorites: [ObjectId!]!
+  hidden: [ObjectId!]!
   invitations: [Invitation!]!
   lastLogin: DateTime
   organizations: [Organization!]!
@@ -198,5 +208,7 @@ type User {
 
 input UserInput {
   email: String!
+  favorites: [ObjectId!]
   fullName: String
+  hidden: [ObjectId!]
 }

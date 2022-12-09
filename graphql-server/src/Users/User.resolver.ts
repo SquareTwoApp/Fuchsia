@@ -69,6 +69,7 @@ export class UserResolver {
   async register(
     @Arg("email") email: string,
     @Arg("password") password: string,
+    @Arg("displayName") displayName: string,
     @Ctx() ctx: Context
   ) {
     const lowerCaseEmail = email.toLowerCase();
@@ -76,6 +77,7 @@ export class UserResolver {
 
     const createResult = await UserModel.create({
       email: lowerCaseEmail,
+      displayName,
       password: hashedPassword,
       userRole: UserRole.USER,
       status: UserStatus.ACTIVE,
@@ -84,18 +86,19 @@ export class UserResolver {
       throw new ApolloError("Failed to register your account");
     });
     const newOrganization = await OrganizationModel.create({
-      name: "New",
+      name: displayName,
       owner: createResult._id,
+      urlSlug: displayName.replace(/\s+/g, '-').toLowerCase(),
+      isPersonal: true
     });
-    createResult.organizations?.push(newOrganization);
-    createResult.save();
+    
     if (!createResult || !createResult.id) {
       throw new ApolloError("Unable to register your account at this time");
     }
 
     ctx.req.session.email = createResult.email;
     ctx.req.session.userRole = createResult.userRole;
-    ctx.req.session.userId = createResult._id;
+    ctx.req.session.userId = createResult._id.toString();
 
     return createResult;
   }
@@ -117,7 +120,7 @@ export class UserResolver {
     }
     ctx.req.session.email = user.email;
     ctx.req.session.userRole = user.userRole;
-    ctx.req.session.userId = user._id;
+    ctx.req.session.userId = user._id.toString();
 
     return { sessionId: ctx.req.session.id };
   }
@@ -173,11 +176,14 @@ export class UserResolver {
   @FieldResolver(type => [Organization])
   async organizations(@Root() user: User, @Ctx() ctx: Context) {
     const orgs = await OrganizationModel.find({
-      members: user._id
+      $or: [
+        {members: ctx.req.session.userId}, 
+        {owner: ctx.req.session.userId},
+        {team: {
+          members: ctx.req.session.userId
+        }}]
     })
     console.log(orgs)
     return orgs
   }
-
-
 }

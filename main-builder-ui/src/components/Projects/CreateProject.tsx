@@ -44,7 +44,7 @@ export function CreateProject() {
       name: "",
       description: "",
       image: "",
-      template: "",
+      template: "undefined",
       ownerId: ""
     },
     validationSchema: Yup.object({
@@ -118,15 +118,21 @@ export function CreateProject() {
             <Grid container spacing={3}>
               {
                 organizationData && organizationData.listOrganizations ? (
-                  <Grid item xs={12}>
-                    <Select<string>
+                  <Grid item xs={3}>
+                  <FormControl fullWidth>
+                    <InputLabel id="select-owner-label">Owner</InputLabel>
+                    <Select
                       variant="outlined"
-
-                      value={formik.values.ownerId}
+                      fullWidth
+                      id="ownerId"
+                      labelId="select-owner-label"
+                      label="Owner"
                       onChange={e => {
                         formik.handleChange(e)
-                        setFieldValue('ownerId', (e.target as HTMLInputElement).value)
+                        const newValue = (e.target as HTMLInputElement).value
+                        setFieldValue('ownerId', newValue)
                       }}
+                      value={formik.values.ownerId}
                     >
                       {
                         organizationData.listOrganizations.map(organization => (
@@ -136,12 +142,13 @@ export function CreateProject() {
                         ))
                       }
                     </Select>
-                  </Grid>
+                  </FormControl>
+                </Grid>
                 ) : (
                   <></>
                 )
               }
-              <Grid item xs={12} md={8}>
+              <Grid item xs={9} md={8}>
                 <TextField
                   fullWidth
                   id="name"
@@ -206,9 +213,16 @@ export function CreateProject() {
                     id="template"
                     labelId="select-template-label"
                     label="Template"
-                    onChange={formik.handleChange}
+                    onChange={e => {
+                      formik.handleChange(e)
+                      const newValue = (e.target as HTMLInputElement).value
+                      setFieldValue('template', newValue)
+                    }}
                     value={formik.values.template}
                   >
+                    <MenuItem value={"undefined"}>
+                      None
+                    </MenuItem>
                     {templates.map(
                       (template: {
                         id: string;
@@ -235,6 +249,7 @@ export function CreateProject() {
               variant="contained"
               color="primary"
               onClick={() => {
+                formik.submitForm()
               }}
             >
               Create

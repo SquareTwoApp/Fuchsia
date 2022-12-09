@@ -16,6 +16,11 @@ export function TopBar() {
   const { logout } = useAuth();
   const anchorRef = useRef<HTMLButtonElement>(null);
 
+  const handleToggle = () => {
+    setOpen((prevOpen) => !prevOpen);
+  };
+
+
   const handleClose = (event: any) => {
     if (
       anchorRef.current &&
@@ -58,18 +63,29 @@ export function TopBar() {
                 id="menu-list-grow"
                 onKeyDown={handleListKeyDown}
               >
+                <div>Signed in as</div>
+                <div>{me?.me?.displayName}</div>
+                <Divider />
                 <MenuItem
                   onClick={() => {
                     nav("/profile");
                     setOpen(false);
                   }}
                 >
-                  Profile
+                  Your profile
                 </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    nav("/organizations");
+                    setOpen(false);
+                  }}
+                >
+                  Your organizations
+                </MenuItem>
+                <Divider />
+                <div>Version: {process.env.REACT_APP_VERSION}</div>
+                <Divider />
                 <MenuItem onClick={logout}>Logout</MenuItem>
-                <Divider />
-                <Divider />
-                <MenuItem>Version: {process.env.REACT_APP_VERSION}</MenuItem>
               </MenuList>
             </ClickAwayListener>
           </Paper>
@@ -81,31 +97,30 @@ export function TopBar() {
   return (
     <>
       <AppBar position="fixed" style={{ zIndex: 1200, backgroundColor: 'grey' }}>
-
         <Toolbar>
           <div style={{ position: 'absolute', left: 0 }} onClick={() => nav('/')}>
             <LogoAnim ver={5} label=' ' scale={0.5} bgColor='grey' />
           </div>
           {/* <img alt="logo" src={logo} height="30" style={{ marginRight: '15px', cursor: 'pointer' }} onClick={() => nav('/')} /> */}
           <div style={{ flexGrow: 1 }} />
-          <div>{me && me.me ? me.me.email : ""}</div>
-          {/* <IconButton
+          <IconButton
             ref={anchorRef}
             edge="end"
             aria-label="account of current user"
             aria-controls={menuId}
             aria-haspopup="true"
-            onClick={}
+            onClick={handleToggle}
             color="inherit"
           >
             {me && me.me && me && me.me.avatar ? (
-              <img alt="avatar" height="40" src={avatar} />
+              <img alt="avatar" height="40" src={me.me.avatar} />
             ) : (
               <AccountCircle />
             )}
-          </IconButton> */}
+          </IconButton>
         </Toolbar>
       </AppBar>
+      {renderMenu}
     </>
   )
 }

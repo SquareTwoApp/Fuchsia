@@ -6,9 +6,19 @@ import { Api } from "./Api/Api.entity";
 import { Auth } from "./Auth/Auth.entity";
 import { Matches } from "class-validator";
 
-@modelOptions({ options: { allowMixed: Severity.ALLOW } })
 @ObjectType()
 export class ServerConfig {
+  @Field(type => ObjectIdScalar)
+  readonly _id!: ObjectId;
+
+  @Field()
+  @Property()
+  name!: string;
+
+  @Field()
+  @Property({ nullable: true })
+  description?: string;
+
   @Property()
   liveJwtSecret?: string;
 

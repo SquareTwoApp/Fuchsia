@@ -19,9 +19,19 @@ export class AppVariable {
   type!: string;
 }
 
-@modelOptions({ options: { allowMixed: Severity.ALLOW } })
 @ObjectType()
 export class AppConfig {
+  @Field(type => ObjectIdScalar)
+  readonly _id!: ObjectId;
+  
+  @Field()
+  @Property()
+  name!: string;
+  
+  @Field()
+  @Property({ nullable: true })
+  description?: string;
+
   @Property()
   liveJwtSecret?: string;
 

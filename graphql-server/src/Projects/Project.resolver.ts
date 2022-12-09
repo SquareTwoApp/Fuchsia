@@ -41,11 +41,7 @@ export class ProjectResolver {
     if (!ctx.req.session.userId) {
       throw new ApolloError("Unauthorized");
     }
-    const user = await UserModel.findById(ctx.req.session.userId);
-    const projects = await ProjectModel.find({
-      organization: { $in: user?.organizations },
-    });
-    return projects;
+    return this.projectService.getProjects(ctx.req.session.userId);
   }
 
   @Mutation((returns) => Project)
@@ -67,8 +63,6 @@ export class ProjectResolver {
     const newProject = await new ProjectModel({
       projectName: project.projectName,
       organization,
-      appConfig: new AppConfig(),
-      serverConfig,
     }).save();
 
     await OrganizationModel.findByIdAndUpdate(project.organizationId, {

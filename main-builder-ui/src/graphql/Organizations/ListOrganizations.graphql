@@ -3,5 +3,6 @@ query ListOrganizations {
     _id
     name
     avatar
+    isPersonal
   }
 }

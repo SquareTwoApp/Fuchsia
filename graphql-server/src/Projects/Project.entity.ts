@@ -23,23 +23,23 @@ export class Project {
   @Property({ required: true })
   projectName!: string;
 
-  @Field((type) => Team)
+  @Field((type) => [Team])
   @Property({ ref: () => Team, default: [] })
   teams!: Ref<Team>[];
 
-  @Field((type) => User)
+  @Field((type) => [User])
   @Property({ ref: () => User, default: [] })
   users!: Ref<User>[];
 
-  @Field((type) => AppConfig)
-  @Property({ type: () => AppConfig, required: true })
-  appConfig!: AppConfig;
+  @Field((type) => [AppConfig])
+  @Property({ ref: () => AppConfig, default: [] })
+  appConfig!: Ref<AppConfig>[];
 
-  @Field((type) => ServerConfig)
-  @Property({ type: () => ServerConfig, required: true })
-  serverConfig!: ServerConfig;
+  @Field((type) => [ServerConfig])
+  @Property({ ref: () => ServerConfig, default: [] })
+  serverConfig!: Ref<ServerConfig>[];
 
   @Field((type) => Organization)
-  @Property({ required: true })
-  organization!: Ref<Team>[];
+  @Property({ ref: () => Organization, required: true })
+  organization!: Ref<Organization>;
 }

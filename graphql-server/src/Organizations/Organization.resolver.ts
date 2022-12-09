@@ -1,5 +1,5 @@
 import { ApolloError } from "apollo-server";
-import { ObjectId } from "mongoose";
+import mongoose, { ObjectId } from "mongoose";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Service } from "typedi";
 import { OrganizationModel, UserModel } from "../Models";
@@ -23,9 +23,10 @@ export class OrganizationResolver {
     if (!ctx.req.session.userId) { throw new ApolloError("Unauthorized") }
     const org = await new OrganizationModel({
       ...organization,
+      urlSlug: organization.name.replace(/\s+/g, '-').toLowerCase(),
+      isPersonal: false,
       owner: ctx.req.session.userId
     }).save()
-    await UserModel.findByIdAndUpdate(ctx.req.session.userId, { $push: { organizations: org._id }})
     return org 
   }
 

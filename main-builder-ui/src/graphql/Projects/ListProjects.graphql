@@ -1,0 +1,16 @@
+query ListProjects {
+  listProjects {
+    _id
+    projectName
+    appConfig {
+      _id
+      name
+      description
+    }
+    serverConfig {
+      _id
+      name
+      description
+    }
+  }
+}

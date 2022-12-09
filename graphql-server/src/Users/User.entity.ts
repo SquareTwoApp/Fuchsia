@@ -19,7 +19,7 @@ export class User {
 
   @Field({ nullable: true })
   @Property()
-  displayName?: string;
+  displayName!: string;
 
   @Field({ nullable: true })
   @Property()
@@ -44,5 +44,14 @@ export class User {
   organizations?: Organization[];
 
   @Field((type) => [Invitation])
+  @Property({ required: false })
   invitations?: Invitation[];
+
+  @Field((type) => [ObjectIdScalar])
+  @Property({ default: [] })
+  favorites!: ObjectId[];
+
+  @Field((type) => [ObjectIdScalar])
+  @Property({ default: [] })
+  hidden!: ObjectId[];
 }
