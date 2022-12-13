@@ -15,6 +15,7 @@ export type Scalars = {
   Float: number;
   DateTime: any;
   ObjectId: any;
+  Upload: any;
 };
 
 export type Api = {
@@ -338,10 +339,14 @@ export type User = {
 };
 
 export type UserInput = {
-  email: Scalars['String'];
+  avatar?: InputMaybe<Scalars['String']>;
+  displayName?: InputMaybe<Scalars['String']>;
+  email?: InputMaybe<Scalars['String']>;
   favorites?: InputMaybe<Array<Scalars['ObjectId']>>;
   fullName?: InputMaybe<Scalars['String']>;
   hidden?: InputMaybe<Array<Scalars['ObjectId']>>;
+  removeAvatar?: InputMaybe<Scalars['Boolean']>;
+  uploadFile?: InputMaybe<Scalars['Upload']>;
 };
 
 export type DeleteInvitationMutationVariables = Exact<{
