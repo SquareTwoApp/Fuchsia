@@ -40,6 +40,10 @@ export class User {
   @Property({ required: false })
   status?: string;
 
+  @Field()
+  @Property({ required: false })
+  resetPasswordToken?: string;
+
   @Field((type) => [Organization])
   organizations?: Organization[];
 

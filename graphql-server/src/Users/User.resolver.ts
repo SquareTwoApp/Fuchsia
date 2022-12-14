@@ -20,6 +20,11 @@ import { ApolloError } from "apollo-server";
 import { COOKIE_NAME } from "../consts";
 import { Service } from "typedi";
 import { Organization } from "../Organizations/Organization.entity";
+import mustache from "mustache";
+import fs from "fs";
+import path from "path";
+import mjml from "mjml";
+import { mailClient } from "../utils/email";
 
 const passwordRegex =
   /(?=(.*[0-9]))(?=.*[\!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])(?=.*[a-z])(?=(.*[A-Z]))(?=(.*)).{6,}/g;
@@ -91,7 +96,7 @@ export class UserResolver {
       urlSlug: displayName.replace(/\s+/g, '-').toLowerCase(),
       isPersonal: true
     });
-    
+
     if (!createResult || !createResult.id) {
       throw new ApolloError("Unable to register your account at this time");
     }
@@ -163,25 +168,55 @@ export class UserResolver {
   @Mutation(() => Boolean)
   async resetPassword(
     @Arg("token") token: string,
-    @Arg("newPassword") newPassword: string
+    @Arg("newPassword") newPassword: string,
+    @Arg("email") email: string
   ) {
-    throw new Error("Not Implemented");
+    const user = await UserModel.findOne({ email });
+    if (user) {
+      const valid = user.resetPasswordToken == token;
+      if (valid) {
+        const hashedPassword = await hash(newPassword);
+        user.password = hashedPassword;
+        user.save();
+        return true;
+      }
+    }
+    return false
   }
 
   @Mutation(() => Boolean)
   async forgotPassword(@Arg("email") email: string) {
-    throw new Error("Not Implemented");
+    const user = await UserModel.findOne({
+      email
+    })
+    if (user) {
+      user.resetPasswordToken = Math.floor(Math.random() * 1000).toString();
+      const emailTemplate = fs.readFileSync(path.join(__dirname, "../EmailTemplates/resetPassword.mjml"), "utf-8");
+      const mustacheEmail = mustache.render(emailTemplate, { resetPasswordLink: `http://localhost:3000/resetPassword?token=${user.resetPasswordToken}&email=${}` });
+      const htmlEmail = mjml(mustacheEmail).html;
+      mailClient.sendMail({
+        from: "Deez@Nutz.com",
+        to: email,
+        subject: "Reset Password stuff",
+        html: htmlEmail
+      })
+      user.save()
+      return true
+    }
+    return false
   }
 
   @FieldResolver(type => [Organization])
   async organizations(@Root() user: User, @Ctx() ctx: Context) {
     const orgs = await OrganizationModel.find({
       $or: [
-        {members: ctx.req.session.userId}, 
-        {owner: ctx.req.session.userId},
-        {team: {
-          members: ctx.req.session.userId
-        }}]
+        { members: ctx.req.session.userId },
+        { owner: ctx.req.session.userId },
+        {
+          team: {
+            members: ctx.req.session.userId
+          }
+        }]
     })
     console.log(orgs)
     return orgs
