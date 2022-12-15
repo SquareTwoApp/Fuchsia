@@ -15,6 +15,8 @@ export function Profile() {
   const handleClose = () => {
     setShowImageModal(false)
   }
+
+  let displayName = me?.me?.displayName;
   // if (!myInfo) { return <div>Loading</div> }
   return (
     <div>
@@ -35,6 +37,7 @@ export function Profile() {
               <Button>Remove Photo</Button>
             </CardActions>
           </Card>
+          <Button variant='contained' style={{ margin: '24px' }}>Save Changes</Button>
         </Grid>
         <Grid item xs={8}>
           <Grid container spacing={3}>
@@ -47,7 +50,11 @@ export function Profile() {
                     <Grid item xs={4}>
                       <TextField
                         label="Display Name"
-                        defaultValue={me?.me?.displayName} />
+                        defaultValue={displayName}
+                        onChange={(n) => {
+                          displayName = n.target.value;
+                          console.log(displayName)
+                        }} />
                     </Grid>
                     <Grid item xs={8}>
                       {/* <TextField

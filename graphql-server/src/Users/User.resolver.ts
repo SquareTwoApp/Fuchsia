@@ -192,7 +192,7 @@ export class UserResolver {
     if (user) {
       user.resetPasswordToken = Math.floor(Math.random() * 1000).toString();
       const emailTemplate = fs.readFileSync(path.join(__dirname, "../EmailTemplates/resetPassword.mjml"), "utf-8");
-      const mustacheEmail = mustache.render(emailTemplate, { resetPasswordLink: `http://localhost:3000/resetPassword?token=${user.resetPasswordToken}&email=${}` });
+      const mustacheEmail = mustache.render(emailTemplate, { resetPasswordLink: `http://localhost:3000/resetPassword?token=${user.resetPasswordToken}&email=${email}` });
       const htmlEmail = mjml(mustacheEmail).html;
       mailClient.sendMail({
         from: "Deez@Nutz.com",
