@@ -118,7 +118,7 @@ type Mutation {
   login(email: String!, password: String!): LoginOutputType!
   logout: Boolean!
   register(displayName: String!, email: String!, password: String!): User!
-  resetPassword(newPassword: String!, token: String!): Boolean!
+  resetPassword(email: String!, newPassword: String!, token: String!): Boolean!
   updateMe(userInput: UserInput!): User!
   updateProject(project: UpdateProjectInput!, projectId: ObjectId!): Project!
   updateServerVersion(projectId: ObjectId!, sandbox: Boolean!, serverConfigId: ObjectId!, version: String!): Boolean!
@@ -205,6 +205,7 @@ type User {
   invitations: [Invitation!]!
   lastLogin: DateTime
   organizations: [Organization!]!
+  resetPasswordToken: String!
   status: String!
   userRole: String!
 }

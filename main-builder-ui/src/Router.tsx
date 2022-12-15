@@ -40,7 +40,7 @@ export function Router() {
           <Route path="/register-success" element={<RegistrationSuccess />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route
-            path="/reset-password"
+            path="/resetPassword"
             element={<ResetPassword />}
           />
         </Route>
