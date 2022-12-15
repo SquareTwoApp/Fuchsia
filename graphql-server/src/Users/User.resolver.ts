@@ -26,8 +26,14 @@ import path from "path";
 import mjml from "mjml";
 import { mailClient } from "../utils/email";
 
-const passwordRegex =
-  /(?=(.*[0-9]))(?=.*[\!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])(?=.*[a-z])(?=(.*[A-Z]))(?=(.*)).{6,}/g;
+import * as fs from "fs";
+import * as path from "path";
+import { v4 } from "uuid";
+import { S3Uploader } from "../utils/s3-uploader";
+import { S3_ACCESS_KEY, S3_SECRET, S3_BUCKET_NAME, S3_REGION, TEMP_DIR } from "../utils/config";
+import { convertBase64ImageToFile } from '../utils/Base64_Image.service'
+
+const passwordRegex = /(?=(.*[0-9]))(?=.*[\!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])(?=.*[a-z])(?=(.*[A-Z]))(?=(.*)).{6,}/g;
 
 @ObjectType()
 export class LoginOutputType {
@@ -46,11 +52,45 @@ export class UserResolver {
     return UserModel.findOne({ email: ctx.req.session.email });
   }
 
+  @Authorized([UserRole.ADMIN, UserRole.USER])
   @Mutation((returns) => User)
   async updateMe(@Arg("userInput") userInput: UserInput, @Ctx() ctx: Context) {
     if (!ctx.req.session.email) {
       throw new ApolloError("Unauthorized");
     }
+
+    const user = await UserModel.findOne({ email: ctx.req.session.email });
+    if (!user) {
+      throw new ApolloError("Unauthorized");
+    }
+
+    let transferFile: boolean = false;
+    let uploadFile: string;
+    if (userInput.removeAvatar === true) {
+      userInput.avatar = "";
+    } else {
+      if (userInput.avatar && userInput.avatar != "") {
+        uploadFile = convertBase64ImageToFile(userInput.avatar);
+        if (uploadFile) {
+          userInput.avatar = uploadFile;
+          transferFile = true;
+        }
+      }
+    }
+
+    if (transferFile) {
+      const ext = userInput.avatar!.split('.').reverse()[0];
+      let mimeType: string = "image/" + (ext === ".png" ? "png" : (ext === ".gif" ? "gif" : "jpeg"));
+
+      const destinationFile = "avatars/" + userInput.uploadFile;
+      const s3Client = new S3Uploader();
+      s3Client.uploadFile(
+        `${TEMP_DIR}/${userInput.avatar}`,
+        `Avatars/${userInput.avatar}`,
+        mimeType
+      );
+    }
+
     return UserModel.findOneAndUpdate(
       { email: ctx.req.session.email },
       { ...userInput },

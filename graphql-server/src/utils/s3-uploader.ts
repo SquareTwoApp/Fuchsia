@@ -7,6 +7,7 @@ import { Response } from "express-serve-static-core";
 @Service()
 export class S3Uploader {
   private s3: AWS.S3;
+  
   constructor() {
     this.s3 = new AWS.S3();
   }

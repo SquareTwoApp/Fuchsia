@@ -17,7 +17,10 @@
      "allowSyntheticDefaultImports": true,
      "resolveJsonModule": true,
      "outDir": "./dist",
-     "rootDir": "./src"
+     "rootDir": "./src",
+     "types": [
+       "@types/graphql-upload"
+     ]
   },
   "include": ["./src/**/*"],
   "exclude": ["tests", "node_modules", "dist"],

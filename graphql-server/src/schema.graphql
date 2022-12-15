@@ -192,6 +192,9 @@ input UpdateProjectInput {
   projectName: String
 }
 
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
 type User {
   _id: ObjectId!
   avatar: String
@@ -208,8 +211,12 @@ type User {
 }
 
 input UserInput {
-  email: String!
+  avatar: String
+  displayName: String
+  email: String
   favorites: [ObjectId!]
   fullName: String
   hidden: [ObjectId!]
+  removeAvatar: Boolean
+  uploadFile: Upload
 }

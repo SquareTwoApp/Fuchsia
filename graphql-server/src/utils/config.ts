@@ -1,4 +1,5 @@
 import * as dotenv from "dotenv";
+import * as path from "path";
 import { requiredConfigVars } from './config.vars';
 const packageJsonInfo = require("../../package.json");
 
@@ -90,3 +91,4 @@ export const DOCKERHUB_PASSWORD = process.env.DOCKERHUB_PASSWORD!;
 export const GITHUB_API_KEY = process.env.GITHUB_API_KEY!;
 export const BUILD_MANAGER_ENDPOINT = process.env.BUILD_MANAGER_ENDPOINT!;
 export const EXPO_TOKEN = process.env.EXPO_TOKEN!;
+export const TEMP_DIR = path.join(__dirname, process.env.TEMPDIR!);
