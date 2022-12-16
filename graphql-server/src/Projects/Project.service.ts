@@ -9,7 +9,7 @@ export class ProjectService {
     const org = await OrganizationModel.findOne({
       $and: [
         { projects: projectId },
-        { $or: [{members: userObjectId}, {owner: userObjectId}] }
+        { $or: [{ members: userObjectId }, { owner: userObjectId }] }
       ]
     })
     return !!org
@@ -18,10 +18,14 @@ export class ProjectService {
   public async getProjects(userId: string) {
     const userObjectId = new mongoose.Types.ObjectId(userId)
     const org = await OrganizationModel.find({
-        $or: [{members: userObjectId}, {owner: userObjectId}]
+      $or: [{ members: userObjectId }, { owner: userObjectId }]
     })
+    console.log("GET PROJECTSSS");
+
+    console.log(org);
+
     const projects = await ProjectModel.find({
-      organizations: org.map(o => o._id)
+      organization: org.map(o => o._id)
     })
     console.log(projects)
     return projects

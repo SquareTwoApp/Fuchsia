@@ -21,8 +21,8 @@ import { COOKIE_NAME } from "../consts";
 import { Service } from "typedi";
 import { Organization } from "../Organizations/Organization.entity";
 import mustache from "mustache";
-import fs from "fs";
-import path from "path";
+// import fs from "fs";
+// import path from "path";
 import mjml from "mjml";
 import { mailClient } from "../utils/email";
 
@@ -32,6 +32,7 @@ import { v4 } from "uuid";
 import { S3Uploader } from "../utils/s3-uploader";
 import { S3_ACCESS_KEY, S3_SECRET, S3_BUCKET_NAME, S3_REGION, TEMP_DIR } from "../utils/config";
 import { convertBase64ImageToFile } from '../utils/Base64_Image.service'
+import { mongoose } from "@typegoose/typegoose";
 
 const passwordRegex = /(?=(.*[0-9]))(?=.*[\!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])(?=.*[a-z])(?=(.*[A-Z]))(?=(.*)).{6,}/g;
 
@@ -55,6 +56,8 @@ export class UserResolver {
   @Authorized([UserRole.ADMIN, UserRole.USER])
   @Mutation((returns) => User)
   async updateMe(@Arg("userInput") userInput: UserInput, @Ctx() ctx: Context) {
+    console.log("UpdateMe: ", userInput);
+
     if (!ctx.req.session.email) {
       throw new ApolloError("Unauthorized");
     }
@@ -248,15 +251,21 @@ export class UserResolver {
 
   @FieldResolver(type => [Organization])
   async organizations(@Root() user: User, @Ctx() ctx: Context) {
+    console.log(ctx.req.session.userId)
+    console.log(user);
+    const userIdObj = new mongoose.Types.ObjectId(ctx.req.session.userId)
+    console.log(userIdObj);
+
     const orgs = await OrganizationModel.find({
       $or: [
-        { members: ctx.req.session.userId },
-        { owner: ctx.req.session.userId },
-        {
-          team: {
-            members: ctx.req.session.userId
-          }
-        }]
+        { members: userIdObj },
+        { owner: userIdObj },
+        // {
+        //   // team: {
+        //   //   members: userIdObj
+        //   // }
+        // }
+      ]
     })
     console.log(orgs)
     return orgs

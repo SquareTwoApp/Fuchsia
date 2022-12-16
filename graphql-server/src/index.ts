@@ -120,6 +120,15 @@ const cert = fs.readFileSync(path.join(__dirname, "./cert/cert.pem"));
     const file = uploader.getFile(fileKey, res);
   });
 
+  app.get('/images/avatar/*', async (req, res) => {
+    const fileKey = decodeURI(req.path.replace("/images/avatar/", ""));
+    const s3Client = new S3Uploader();
+    s3Client.getFile(`Avatars/${fileKey}`, res)
+    console.log("Im here...");
+    // return actual img
+
+  })
+
   const apolloServer = new ApolloServer({
     schema,
     context: async ({ req, res }: any) => {
@@ -141,7 +150,7 @@ const cert = fs.readFileSync(path.join(__dirname, "./cert/cert.pem"));
     },
   });
   const server = https.createServer({ key: key, cert: cert }, app);
-  server.listen(HTTPS_PORT, () => { 
+  server.listen(HTTPS_PORT, () => {
     console.log(`\x1b[36m[Express]\x1b[0m >> HTTPS Server is running on port ${HTTPS_PORT}`);
     new SubscriptionServer(
       {

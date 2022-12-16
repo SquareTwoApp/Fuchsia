@@ -45,8 +45,8 @@ export function Profile() {
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false)
 
   useEffect(() => {
-    if(me && me.me) {
-      if(me.me.avatar) {
+    if (me && me.me) {
+      if (me.me.avatar) {
         setNewImage(me.me.avatar);
       }
     }
@@ -94,7 +94,7 @@ export function Profile() {
     }).then(resp => {
       console.log('resp', resp);
       alert('Use Notistack: resp');
-    }).catch(error => {      
+    }).catch(error => {
       alert('Use Notistack: ' + error.message);
     });
   }
@@ -128,7 +128,9 @@ export function Profile() {
                       {preview ?
                         <img src={newImage} alt="Avatar" style={{ height: 250, width: 250 }} />
                         :
-                        <AccountCircle style={{ height: '250px', width: '250px' }} />
+                        me.me?.avatar ? <img src={`${process.env.REACT_APP_IMAGES_ENDPOINT}/avatar/${me.me.avatar}`} alt="Avatar" style={{ height: 250, width: 250 }} />
+                          :
+                          <AccountCircle style={{ height: '250px', width: '250px' }} />
                       }
                     </IconButton>
                   </CardContent>
@@ -145,13 +147,13 @@ export function Profile() {
                       <CardContent>
                         <Grid container spacing={3}>
                           <Grid item xs={12} sm={6}>
-                            <TextField 
-                              name="displayName" 
-                              value={values.displayName} 
+                            <TextField
+                              name="displayName"
+                              value={values.displayName}
                               onChange={e => setFieldValue("displayName", e.currentTarget.value)}
-                              label="Display Name" 
+                              label="Display Name"
                               fullWidth
-                              />
+                            />
                           </Grid>
                           <Grid item xs={12} sm={6}>
                             <TextField
@@ -180,7 +182,7 @@ export function Profile() {
                               />
                             </Grid>
                             <Grid item md={6} xs={12}>
-                              <PasswordField 
+                              <PasswordField
                                 value={values.confirmPassword}
                                 label="Confirm New Password"
                                 name="confirmPassword"
@@ -196,13 +198,13 @@ export function Profile() {
                       </CardContent>
                     </Card>
                   </Grid>
-                  <Grid item xs={12}>
+                  {/* <Grid item xs={12}>
                     <Card style={{ minHeight: '250px' }}>
                     </Card>
-                  </Grid>
+                  </Grid> */}
                 </Grid>
                 <Grid>
-                  <Button variant="contained" color="primary" onClick={() => handleSubmit()}>Submit</Button>
+                  <Button variant="contained" color="primary" style={{ margin: 12 }} onClick={() => handleSubmit()}>Submit</Button>
                 </Grid>
               </Grid>
             </>
