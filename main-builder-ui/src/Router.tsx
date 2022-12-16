@@ -17,6 +17,7 @@ import { Projects } from "./components/Projects/Projects";
 import { useAuth } from "./hooks/useAuth";
 import { AuthLayout } from "./layouts/AuthLayout";
 import { NoAuthLayout } from "./layouts/NoAuthLayout";
+import ForgotPswdRedirect from "./components/Authentication/ForgotPswdRedirect";
 
 function PrivateRoute({ children }: { children: JSX.Element }) {
   let auth = useAuth();
@@ -43,6 +44,11 @@ export function Router() {
             path="/resetPassword"
             element={<ResetPassword />}
           />
+          <Route
+            path="/ForgotPswdRedirect"
+            element={<ForgotPswdRedirect />}
+          />
+
         </Route>
       </Route>
 

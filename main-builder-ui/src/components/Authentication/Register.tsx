@@ -14,7 +14,6 @@ import './Authentication.css'
 
 export function Register() {
   const [register, { data, loading, error }] = useRegisterMutation();
-  const { enqueueSnackbar } = useSnackbar();
   const nav = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -30,7 +29,12 @@ export function Register() {
       email: Yup.string()
         .email("Invalid email address")
         .required("Email required"),
-      password: Yup.string().required("No password provided"),
+      password: Yup.string()
+        .required("No password provided")
+        .min(8),
+      confirmPassword: Yup.string()
+        .required("Please confirm you password")
+        .equals([Yup.ref('password')], "Your passwords must match"),
       displayName: Yup.string().required("Display name required"),
     }),
     onSubmit: (values) => {
@@ -48,14 +52,6 @@ export function Register() {
       nav('/dashboard')
     }
   }, [data, nav])
-  useEffect(() => {
-    if (status) {
-      enqueueSnackbar(status.message, {
-        variant: status.type,
-        persist: false,
-      });
-    }
-  }, [enqueueSnackbar, status]);
 
   useEffect(() => {
     if (error) {
@@ -79,6 +75,7 @@ export function Register() {
         }}
         leftContent={{
           title: 'Register',
+          errorMessage: status?.message,
           submitButton: {
             label: "Sign-Up",
             onSubmit: formik.handleSubmit,
@@ -97,8 +94,9 @@ export function Register() {
                 color: "secondary",
                 error: !!formik.errors.email,
                 variant: "standard",
+                helperText: formik.errors.email || " "
               },
-              startIcon: <Mail sx={{ color: "action.active", mr: 1, my: 0.5 }} />,
+              startIcon: <Mail sx={{ color: "action.active", mr: 1, my: 0.5, alignSelf: 'start' }} />,
             },
             {
               props: {
@@ -111,8 +109,9 @@ export function Register() {
                 color: "secondary",
                 error: !!formik.errors.displayName,
                 variant: "standard",
+                helperText: formik.errors.displayName || " "
               },
-              startIcon: <VerifiedUser sx={{ color: "action.active", mr: 1, my: 0.5 }} />,
+              startIcon: <VerifiedUser sx={{ color: "action.active", mr: 1, my: 0.5, alignSelf: 'start' }} />,
             },
             {
               props: {
@@ -125,10 +124,12 @@ export function Register() {
                 error: !!formik.errors.password,
                 variant: "standard",
                 type: showPassword ? "text" : "password",
+                helperText: formik.errors.password || " "
               },
-              startIcon: <Lock sx={{ color: "action.active", mr: 1, my: 0.5 }} />,
+              startIcon: <Lock sx={{ color: "action.active", mr: 1, my: 0.5, alignSelf: 'start' }} />,
               endIcon: (
                 <IconButton
+                  style={{ alignSelf: 'start' }}
                   aria-label="toggle password visibility"
                   onClick={(e) => setShowPassword((p) => !p)}
                   onMouseDown={(e) => e.preventDefault()}
@@ -148,10 +149,12 @@ export function Register() {
                 error: !!formik.errors.confirmPassword,
                 variant: "standard",
                 type: showConfirmPassword ? "text" : "password",
+                helperText: formik.errors.confirmPassword || " "
               },
-              startIcon: <Lock sx={{ color: "action.active", mr: 1, my: 0.5 }} />,
+              startIcon: <Lock sx={{ color: "action.active", mr: 1, my: 0.5, alignSelf: 'start' }} />,
               endIcon: (
                 <IconButton
+                  style={{ alignSelf: 'start' }}
                   aria-label="toggle password visibility"
                   onClick={(e) => setShowConfirmPassword((p) => !p)}
                   onMouseDown={(e) => e.preventDefault()}

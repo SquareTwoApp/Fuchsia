@@ -6,7 +6,9 @@ import {
   Grid,
   TextField,
   TextFieldProps,
+  Typography,
 } from "@mui/material";
+import { ErrorMessage } from "formik";
 import React from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
@@ -29,12 +31,13 @@ interface LeftContent {
     startIcon?: JSX.Element;
     endIcon?: JSX.Element;
   }>;
-  submitButton: {
+  submitButton?: {
     label: string;
     disabled: boolean;
     loading: boolean;
     onSubmit: (e: React.ChangeEvent<any>) => void;
   };
+  errorMessage?: string;
   links?: NavigationItem[];
 }
 
@@ -63,13 +66,13 @@ export function Panel({ rightContent, leftContent }: IPanel) {
         )}
       </div>
       <div className="auth-panel">
-        <form name="panel-form" onSubmit={leftContent.submitButton.onSubmit}>
+        <form name="panel-form" onSubmit={leftContent.submitButton?.onSubmit}>
           <div className="login-box-container">
             <div className="login-box">
               {leftContent.title && <h2 className="welcome-text">{leftContent.title}</h2>}
               {leftContent.blurb && <p>{leftContent.blurb}</p>}
               {leftContent.fields.map((field, i) => (
-                <div style={{ marginTop: 10, marginBottom: 10 }}>
+                <div style={{ marginTop: 5, marginBottom: 5 }}>
                   <Box key={i} sx={{ display: "flex", alignItems: "flex-end" }}>
                     {field.startIcon}
                     <TextField {...field.props} />
@@ -77,7 +80,8 @@ export function Panel({ rightContent, leftContent }: IPanel) {
                   </Box>
                 </div>
               ))}
-              <div
+              {leftContent.errorMessage && <Typography color="error">{leftContent.errorMessage}</Typography>}
+              {leftContent.submitButton && <div
                 style={{
                   position: "relative",
                   margin: "3em 0",
@@ -99,7 +103,7 @@ export function Panel({ rightContent, leftContent }: IPanel) {
                   )}
                   <span>{leftContent.submitButton.label}</span>
                 </Button>
-              </div>
+              </div>}
             </div>
           </div>
           <Grid container={true} justifyContent="end">

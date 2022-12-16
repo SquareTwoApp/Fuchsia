@@ -4,7 +4,7 @@ import { IconButton } from "@mui/material";
 import { useAuth } from "../../hooks/useAuth";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Tag, Lock, Visibility, VisibilityOff, ArrowBack } from "@mui/icons-material";
+import { Tag, Lock, Visibility, VisibilityOff, ArrowBack, Mail } from "@mui/icons-material";
 import { Panel } from "./Panel";
 import './Authentication.css'
 
@@ -30,6 +30,7 @@ export function ResetPassword() {
       token: "",
       newPassword: "",
       confirmPassword: "",
+      email: ""
     },
     validationSchema: Yup.object({
       newPassword: Yup.string()
@@ -43,7 +44,12 @@ export function ResetPassword() {
     onSubmit: async (values) => {
       setLoadingChangePassword(true);
       try {
-        resetPassword(values.token, values.newPassword);
+        const result = await resetPassword(values.token, values.newPassword, values.email);
+        if (result.data?.resetPassword) {
+          nav('/login');
+        } else {
+          alert("Reset password FAILED");
+        }
       } finally {
         setLoadingChangePassword(false);
       }
@@ -53,6 +59,10 @@ export function ResetPassword() {
     const token = searchParams.get("token");
     if (token) {
       setFieldValue("token", token);
+    }
+    const email = searchParams.get("email");
+    if (email) {
+      setFieldValue("email", email);
     }
   }, [searchParams, setFieldValue]);
 
@@ -100,8 +110,24 @@ export function ResetPassword() {
                 color: "secondary",
                 error: !!formik.errors.token,
                 variant: "standard",
+                disabled: !!searchParams.get("token")
               },
               startIcon: <Tag sx={{ color: "action.active", mr: 1, my: 0.5 }} />,
+            },
+            {
+              props: {
+                sx: { minWidth: "350px" },
+                placeholder: "Email",
+                id: "email",
+                onChange: formik.handleChange,
+                value: formik.values.email,
+                type: "text",
+                color: "secondary",
+                error: !!formik.errors.email,
+                variant: "standard",
+                disabled: !!searchParams.get("email")
+              },
+              startIcon: <Mail sx={{ color: "action.active", mr: 1, my: 0.5 }} />,
             },
             {
               props: {

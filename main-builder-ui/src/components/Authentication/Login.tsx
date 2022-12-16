@@ -13,10 +13,8 @@ import './Authentication.css'
 
 export function Login() {
   const { login, loginLoading, loginFailed, isLoggedIn } = useAuth();
-  const { enqueueSnackbar } = useSnackbar();
   const nav = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-
   const { setStatus, status, ...formik } = useFormik({
     initialValues: {
       email: "",
@@ -33,18 +31,11 @@ export function Login() {
     },
   });
 
-  useEffect(() => {
-    if (status) {
-      enqueueSnackbar(status.message, {
-        variant: status.type,
-        persist: false,
-      });
-    }
-  }, [enqueueSnackbar, status]);
+
 
   useEffect(() => {
     if (loginFailed) {
-      console.log("loggin failed");
+      console.log("login failed");
       setStatus({
         message: "Invalid email or password",
         type: "error",
@@ -58,7 +49,6 @@ export function Login() {
 
   return (
     <div className="ctn">
-
       <Panel
         rightContent={{
           title: "Welcome back",
@@ -76,6 +66,7 @@ export function Login() {
               location: "/forgot-password",
             },
           ],
+          errorMessage: status?.message,
           submitButton: {
             label: "Login",
             onSubmit: formik.handleSubmit,
@@ -94,8 +85,9 @@ export function Login() {
                 color: "secondary",
                 error: !!formik.errors.email,
                 variant: "standard",
+                helperText: formik.errors.email || " "
               },
-              startIcon: <Mail sx={{ color: "action.active", mr: 1, my: 0.5 }} />,
+              startIcon: <Mail sx={{ color: "action.active", mr: 1, my: 0.5, alignSelf: 'start' }} />,
             },
             {
               props: {
@@ -108,10 +100,12 @@ export function Login() {
                 error: !!formik.errors.password,
                 variant: "standard",
                 type: showPassword ? "text" : "password",
+                helperText: formik.errors.password || " "
               },
-              startIcon: <Lock sx={{ color: "action.active", mr: 1, my: 0.5 }} />,
+              startIcon: <Lock sx={{ color: "action.active", mr: 1, my: 0.5, alignSelf: 'start' }} />,
               endIcon: (
                 <IconButton
+                  style={{ alignSelf: 'start' }}
                   aria-label="toggle password visibility"
                   onClick={(e) => setShowPassword((p) => !p)}
                   onMouseDown={(e) => e.preventDefault()}

@@ -15,7 +15,7 @@ export function ForgotPassword() {
 
   const [showLoading, setShowLoading] = useState<boolean>(false);
 
-  const formik = useFormik({
+  const { status, setStatus, ...formik } = useFormik({
     initialValues: {
       email: "",
     },
@@ -27,7 +27,8 @@ export function ForgotPassword() {
     onSubmit: async (values) => {
       setShowLoading(true)
       try {
-        await forgotPassword(values.email)
+        await forgotPassword(values.email);
+        nav('/ForgotPswdRedirect')
       } catch {
 
       } finally {
@@ -50,7 +51,7 @@ export function ForgotPassword() {
           title: "Reset password",
           blurb: "If you already have a code, click below to reset your password",
           button: {
-            location: '/reset-password',
+            location: '/resetPassword',
             name: 'Reset Password'
           }
         }}
@@ -68,6 +69,7 @@ export function ForgotPassword() {
               location: "/login",
             },
           ],
+          errorMessage: status?.message,
           submitButton: {
             label: "Submit",
             onSubmit: formik.handleSubmit,
@@ -86,8 +88,9 @@ export function ForgotPassword() {
                 color: "secondary",
                 error: !!formik.errors.email,
                 variant: "standard",
+                helperText: formik.errors.email || " "
               },
-              startIcon: <Mail sx={{ color: "action.active", mr: 1, my: 0.5 }} />,
+              startIcon: <Mail sx={{ color: "action.active", mr: 1, my: 0.5, alignSelf: 'start' }} />,
             }
           ],
         }}

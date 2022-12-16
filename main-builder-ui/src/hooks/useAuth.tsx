@@ -29,7 +29,8 @@ interface IAuthContext {
   ) => Promise<FetchResult<ForgotPasswordMutation>>
   resetPassword: (
     token: string,
-    newPassword: string
+    newPassword: string,
+    email: string,
   ) => Promise<FetchResult<ResetPasswordMutation>>
   changePassword: (
     email: string,
@@ -83,11 +84,12 @@ export const AuthProvider = ({ children }: PropsWithChildren<{}>) => {
     return forgotPasswordMutation({ variables: { email } })
   }
 
-  const resetPassword = async (token: string, newPassword: string) => {
+  const resetPassword = async (token: string, newPassword: string, email: string) => {
     return resetPasswordMutation({
       variables: {
         token,
         newPassword,
+        email
       },
     })
   }
