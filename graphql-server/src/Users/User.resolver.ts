@@ -45,6 +45,15 @@ export class LoginOutputType {
 @Service()
 @Resolver(User)
 export class UserResolver {
+
+  @FieldResolver()
+  avatar(@Root() user: User) {
+    if(user.avatar) {
+      user.avatar = `https://${S3_BUCKET_NAME}.s3.${S3_REGION}.amazonaws.com/Avatars/${user.avatar}`;
+    }
+    return user.avatar;
+  }
+
   @Query(() => User, { nullable: true })
   async me(@Ctx() ctx: Context) {
     if (!ctx.req.session.email) {
@@ -56,8 +65,6 @@ export class UserResolver {
   @Authorized([UserRole.ADMIN, UserRole.USER])
   @Mutation((returns) => User)
   async updateMe(@Arg("userInput") userInput: UserInput, @Ctx() ctx: Context) {
-    console.log("UpdateMe: ", userInput);
-
     if (!ctx.req.session.email) {
       throw new ApolloError("Unauthorized");
     }
@@ -87,11 +94,22 @@ export class UserResolver {
 
       const destinationFile = "avatars/" + userInput.uploadFile;
       const s3Client = new S3Uploader();
-      s3Client.uploadFile(
+      await s3Client.uploadFile(
         `${TEMP_DIR}/${userInput.avatar}`,
         `Avatars/${userInput.avatar}`,
         mimeType
-      );
+      ).then(resp => {
+        //If the upload completes successfully, let's delete the temp file
+        if(resp) {
+          fs.unlink(`${TEMP_DIR}/${userInput.avatar}`, err => {
+            if(err) {
+              console.log('User.resolver::updateMe -> fs.unlink error:' + err.message);
+            }
+          });
+        }
+      }).catch(error => {
+        
+      });
     }
 
     return UserModel.findOneAndUpdate(

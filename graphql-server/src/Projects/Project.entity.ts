@@ -9,6 +9,7 @@ import { v4 as uuid } from "uuid";
 import { ServerConfig } from "./ServerConfig/ServerConfig.entity";
 import { Team } from "../Teams/Team.entity";
 import { User } from "../Users/User.entity";
+import { HeroImage } from "../Server/HeroImages/HeroImage.entity";
 
 @ObjectType()
 export class Project {
@@ -22,6 +23,10 @@ export class Project {
   @Field()
   @Property({ required: true })
   projectName!: string;
+
+  @Field((type) => HeroImage, { nullable: true })
+  @Property({ ref: () => HeroImage, default: null, nullable: true })
+  heroImage!: Ref<HeroImage>;
 
   @Field((type) => [Team])
   @Property({ ref: () => Team, default: [] })

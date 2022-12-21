@@ -2,6 +2,9 @@ query ListProjects {
   listProjects {
     _id
     projectName
+    heroImage {
+      path
+    }
     appConfig {
       _id
       name

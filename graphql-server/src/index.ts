@@ -32,6 +32,8 @@ import { ProjectResolver } from "./Projects/Project.resolver";
 import { ServerConfigResolver } from "./Projects/ServerConfig/ServerConfig.resolver";
 import { ServerResolver } from "./Server/Server.resolver";
 
+import { HeroImageResolver } from "./Server/HeroImages/HeroImage.resolver";
+
 const key = fs.readFileSync(path.join(__dirname, "./cert/key.pem"));
 const cert = fs.readFileSync(path.join(__dirname, "./cert/cert.pem"));
 
@@ -64,7 +66,8 @@ const cert = fs.readFileSync(path.join(__dirname, "./cert/cert.pem"));
       OrganizationResolver,
       ProjectResolver,
       ServerConfigResolver,
-      ServerResolver
+      ServerResolver,
+      HeroImageResolver
     ],
     emitSchemaFile: path.resolve(__dirname, "schema.graphql"),
     globalMiddlewares: [TypegooseMiddleware],
