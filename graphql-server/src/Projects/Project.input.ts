@@ -11,6 +11,9 @@ export class ProjectInput {
   projectDescription!: string;
 
   @Field((type) => ObjectIdScalar)
+  heroImageId!: ObjectId;
+
+  @Field((type) => ObjectIdScalar)
   organizationId!: ObjectId;
 }
 
@@ -18,4 +21,7 @@ export class ProjectInput {
 export class UpdateProjectInput {
   @Field({ nullable: true })
   projectName?: string;
+
+  @Field((type) => ObjectIdScalar, { nullable: true })
+  heroImageId?: ObjectId;
 }

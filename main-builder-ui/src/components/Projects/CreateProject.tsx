@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Button,
   Card,
@@ -19,18 +19,18 @@ import { useNavigate } from "react-router-dom";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { useFormik } from "formik";
 import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator'
-import { useCreateProjectMutation, useListOrganizationsQuery } from '../../generated/graphql'
+import { useCreateProjectMutation, useListOrganizationsQuery, ListProjectsDocument } from '../../generated/graphql'
 import * as Yup from "yup";
+import { HeroImages } from "../Common/HeroImages";
+
 export function CreateProject() {
   const nav = useNavigate();
-  const [createProject] = useCreateProjectMutation()
+  const [createProject] = useCreateProjectMutation({
+    refetchQueries: [ListProjectsDocument]
+  })
   const { data: organizationData } = useListOrganizationsQuery()
-  const [images, setImages] = useState<Array<{ id: string; image: string }>>(
-    []
-  );
-  const [templates, setTemplates] = useState<
-    Array<{ id: string; name: string; description: string }>
-  >([]);
+  const [images, setImages] = useState<Array<{ id: string; image: string }>>([]);
+  const [templates, setTemplates] = useState<Array<{ id: string; name: string; description: string }>>([]);
   const suggestedName = useMemo(() => {
     return uniqueNamesGenerator({
       dictionaries: [adjectives, animals],
@@ -38,14 +38,16 @@ export function CreateProject() {
       separator: '-',
       style: "lowerCase"
     })
-  }, [])
+  }, []);
+
   const { setFieldValue, ...formik } = useFormik({
     initialValues: {
       name: "",
       description: "",
       image: "",
       template: "undefined",
-      ownerId: ""
+      ownerId: "",
+      heroImageId: ""
     },
     validationSchema: Yup.object({
       name: Yup.string().required()
@@ -56,32 +58,23 @@ export function CreateProject() {
           project: {
             organizationId: values.ownerId,
             projectDescription: values.description,
-            projectName: values.name
+            projectName: values.name,
+            heroImageId: values.heroImageId
           },
         },
-      });
-      nav(`/projects`);
+      }).then(resp => {
+        if (resp) {
+          nav(`/projects`);
+        }
+      }).catch(error => {
+        alert('Use Notistack: Error:' + error.message);
+      })
     }
-  })
-  // const imageResults = useAuthQuery(getImages, {
-  //   variables: { organizationId: currentOrganization?.id },
-  // });
+  });
+
   // const templateResults = useAuthQuery(getProjectTemplates, {
   //   variables: { organizationId: currentOrganization?.id },
   // });
-  // const [createProject] = useMutation(createProjectMutation, {
-  //   refetchQueries: [
-  //     {
-  //       query: getMyProject,
-  //     },
-  //   ],
-  // });
-
-  // useEffect(() => {
-  //   if (imageResults.data) {
-  //     setImages(imageResults.data.images);
-  //   }
-  // }, [imageResults]);
 
   // useEffect(() => {
   //   if (templateResults.data) {
@@ -89,6 +82,7 @@ export function CreateProject() {
   //   }
   // }, [templateResults]);
   // if (!organizations || !currentOrganization) { return <div /> }
+
   return (
     <div>
       <div
@@ -119,31 +113,31 @@ export function CreateProject() {
               {
                 organizationData && organizationData.listOrganizations ? (
                   <Grid item xs={3}>
-                  <FormControl fullWidth>
-                    <InputLabel id="select-owner-label">Owner</InputLabel>
-                    <Select
-                      variant="outlined"
-                      fullWidth
-                      id="ownerId"
-                      labelId="select-owner-label"
-                      label="Owner"
-                      onChange={e => {
-                        formik.handleChange(e)
-                        const newValue = (e.target as HTMLInputElement).value
-                        setFieldValue('ownerId', newValue)
-                      }}
-                      value={formik.values.ownerId}
-                    >
-                      {
-                        organizationData.listOrganizations.map(organization => (
-                          <MenuItem data-type="organization" value={organization._id} key={organization._id}>
-                            {organization.name}
-                          </MenuItem>
-                        ))
-                      }
-                    </Select>
-                  </FormControl>
-                </Grid>
+                    <FormControl fullWidth>
+                      <InputLabel id="select-owner-label">Owner</InputLabel>
+                      <Select
+                        variant="outlined"
+                        fullWidth
+                        id="ownerId"
+                        labelId="select-owner-label"
+                        label="Owner"
+                        onChange={e => {
+                          formik.handleChange(e)
+                          const newValue = (e.target as HTMLInputElement).value
+                          setFieldValue('ownerId', newValue)
+                        }}
+                        value={formik.values.ownerId}
+                      >
+                        {
+                          organizationData.listOrganizations.map(organization => (
+                            <MenuItem data-type="organization" value={organization._id} key={organization._id}>
+                              {organization.name}
+                            </MenuItem>
+                          ))
+                        }
+                      </Select>
+                    </FormControl>
+                  </Grid>
                 ) : (
                   <></>
                 )
@@ -165,43 +159,7 @@ export function CreateProject() {
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth>
                   <InputLabel id="select-img-label">Image</InputLabel>
-                  <Select
-                    variant="outlined"
-                    fullWidth
-                    id="image"
-                    labelId="select-img-label"
-                    label="Image"
-                    onChange={formik.handleChange}
-                    value={formik.values.image}
-                    renderValue={(selected) => (
-                      <img
-                        alt="Hero"
-                        src={`data:image/jpeg;base64,${images.find((img) => img.id === selected)?.image
-                          }`}
-                        style={{
-                          height: "50px",
-                          width: "75px",
-                          objectFit: "contain",
-                        }}
-                      />
-                    )}
-                  >
-                    {images.map(
-                      (img: { id: string; image: string }) => (
-                        <MenuItem key={img.id} value={img.id}>
-                          <img
-                            alt=""
-                            src={`data:image/jpeg;base64,${img.image}`}
-                            style={{
-                              height: "50px",
-                              width: "75px",
-                              objectFit: "contain",
-                            }}
-                          />
-                        </MenuItem>
-                      )
-                    )}
-                  </Select>
+                  <HeroImages onSelect={imageId => setFieldValue("heroImageId", imageId)} />
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={6}>

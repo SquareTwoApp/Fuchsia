@@ -26,7 +26,7 @@ export class ProjectService {
 
     const projects = await ProjectModel.find({
       organization: org.map(o => o._id)
-    })
+    }).populate(["heroImage"])
     console.log(projects)
     return projects
   }

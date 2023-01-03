@@ -1,0 +1,3 @@
+mutation DeleteHeroImage($id: ObjectId!) {
+    deleteHeroImage(_id: $id)
+}

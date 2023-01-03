@@ -25,23 +25,24 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  ToggleButtonGroup, 
+  ToggleButtonGroup,
   ToggleButton
 } from "@mui/material"
-import { 
-  Search as SearchIcon, 
-  ViewList as ViewListIcon, 
-  ViewModule as ViewModuleIcon ,
+import {
+  Search as SearchIcon,
+  ViewList as ViewListIcon,
+  ViewModule as ViewModuleIcon,
   Delete as DeleteIcon,
-  Receipt as ReceiptIcon,
+  OpenInBrowser as OpenInBrowserIcon,
   KeyboardArrowDown as KeyboardArrowDownIcon,
   KeyboardArrowUp as KeyboardArrowUpIcon,
-  Visibility, 
+  Visibility,
   VisibilityOff
 } from '@mui/icons-material'
 import { NoProjects } from "./NoProjects";
 import { ProjectCard } from "./ProjectCard";
 import { useDeleteProjectMutation, useListProjectsQuery, useMeQuery } from "../../generated/graphql";
+import './Projects.css'
 
 interface ProjectTableRowProps {
   id: string;
@@ -52,6 +53,10 @@ interface ProjectTableRowProps {
 function ProjectRow({ project, id, onDelete }: ProjectTableRowProps) {
   const [open, setOpen] = React.useState(false);
   const nav = useNavigate();
+
+  useEffect(() => {
+    console.log('project', project);
+  }, [project]);
 
   if (!project) {
     return <div />;
@@ -68,13 +73,13 @@ function ProjectRow({ project, id, onDelete }: ProjectTableRowProps) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell>{project.name}</TableCell>
+        <TableCell>{project.projectName}</TableCell>
         <TableCell>{project.projectCode}</TableCell>
         <TableCell>
-          {new Date(project.createdAt).toLocaleDateString("en-US")}
+          {project.createdAt ? new Date(project.createdAt).toLocaleDateString("en-US") : "--"}
         </TableCell>
         <TableCell>
-          {new Date(project.updatedAt).toLocaleDateString("en-US")}
+          {project.updatedAt ? new Date(project.updatedAt).toLocaleDateString("en-US") : "--"}
         </TableCell>
         <TableCell
           style={{ cursor: "pointer" }}
@@ -82,8 +87,8 @@ function ProjectRow({ project, id, onDelete }: ProjectTableRowProps) {
             nav(`/projects/${id}`);
           }}
         >
-          <IconButton>
-            <ReceiptIcon />
+          <IconButton title="Open Project">
+            <OpenInBrowserIcon />
           </IconButton>
         </TableCell>
         <TableCell
@@ -92,7 +97,7 @@ function ProjectRow({ project, id, onDelete }: ProjectTableRowProps) {
             onDelete(id);
           }}
         >
-          <IconButton>
+          <IconButton title="Permanently Delete Project">
             <DeleteIcon />
           </IconButton>
         </TableCell>
@@ -134,15 +139,15 @@ function ProjectView({ viewType, projectAccesses, onDelete }: IProjectViewProp) 
     case "grid": {
       return (
         <Grid container spacing={3}>
-          <div className='project-card-wrapper'>
-            {projectAccesses.map((projectAccess, index) => (
+          {projectAccesses.map((projectAccess, index) => (
+            <Grid item className="project-card-wrapper">
               <ProjectCard
                 key={index}
                 project={projectAccess}
                 onDelete={onDelete}
               />
-            ))}
-          </div>
+            </Grid>
+          ))}
         </Grid>
       );
     }
@@ -375,26 +380,24 @@ export function Projects() {
           </Button>
         </div>
       </div>
-      <Box>
-        {!projectsData?.listProjects ||
+      {!projectsData?.listProjects ||
         projectsData.listProjects.length === 0 ? (
-          <div>Currently no projects to diplay</div>
-        ) : (
-          viewType && (
-            <ProjectView
-              viewType={viewType}
-              projectAccesses={projectsData!.listProjects}
-              onDelete={(key) => {
-                const project = projectsData!.listProjects.find(
-                  (fc) => fc._id === key
-                );
-                setProjectToDelete(project);
-                setOpenDeleteProjectDialog(true);
-              }}
-            />
-          )
-        )}
-      </Box>
+        <div>Currently no projects to diplay</div>
+      ) : (
+        viewType && (
+          <ProjectView
+            viewType={viewType}
+            projectAccesses={projectsData!.listProjects}
+            onDelete={(key) => {
+              const project = projectsData!.listProjects.find(
+                (fc) => fc._id === key
+              );
+              setProjectToDelete(project);
+              setOpenDeleteProjectDialog(true);
+            }}
+          />
+        )
+      )}
 
       <Dialog
         open={openDeleteProjectDialog}

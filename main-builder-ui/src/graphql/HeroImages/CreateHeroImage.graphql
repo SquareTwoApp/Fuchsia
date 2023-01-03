@@ -1,0 +1,6 @@
+mutation CreateHeroImage($image: Upload!) {
+  createHeroImage(image: $image) {
+    _id
+    path
+  }
+}

@@ -62,6 +62,7 @@ export class ProjectResolver {
     serverConfig.sandboxJwtSecret = crypto.randomBytes(20).toString("hex");
     const newProject = await new ProjectModel({
       projectName: project.projectName,
+      heroImage: project.heroImageId,
       organization,
     }).save();
 

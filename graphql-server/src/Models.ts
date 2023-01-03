@@ -5,10 +5,12 @@ import { Project } from "./Projects/Project.entity";
 import { Invitation } from "./Invitations/Invitation.entity";
 import { ServerConfig } from "./Projects/ServerConfig/ServerConfig.entity";
 import { AppConfig } from "./Projects/AppConfig/AppConfig.entity";
+import { HeroImage } from "./Server/HeroImages/HeroImage.entity";
 
-export const OrganizationModel = getModelForClass(Organization);
-export const InvitationModel = getModelForClass(Invitation);
-export const UserModel = getModelForClass(User);
-export const ProjectModel = getModelForClass(Project);
+export const OrganizationModel = getModelForClass(Organization, { schemaOptions: { timestamps: true } });
+export const InvitationModel = getModelForClass(Invitation, { schemaOptions: { timestamps: true } });
+export const UserModel = getModelForClass(User, { schemaOptions: { timestamps: true } });
+export const ProjectModel = getModelForClass(Project, { schemaOptions: { timestamps: true } });
 export const ServerConfigModel = getModelForClass(ServerConfig);
 export const AppConfigModel = getModelForClass(AppConfig);
+export const HeroImageModel = getModelForClass(HeroImage);
