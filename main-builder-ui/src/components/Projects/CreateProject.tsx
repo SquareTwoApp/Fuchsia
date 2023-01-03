@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Button,
   Card,
@@ -19,13 +19,15 @@ import { useNavigate } from "react-router-dom";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { useFormik } from "formik";
 import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator'
-import { useCreateProjectMutation, useListOrganizationsQuery } from '../../generated/graphql'
+import { useCreateProjectMutation, useListOrganizationsQuery, ListProjectsDocument } from '../../generated/graphql'
 import * as Yup from "yup";
 import { HeroImages } from "../Common/HeroImages";
 
 export function CreateProject() {
   const nav = useNavigate();
-  const [createProject] = useCreateProjectMutation()
+  const [createProject] = useCreateProjectMutation({
+    refetchQueries: [ListProjectsDocument]
+  })
   const { data: organizationData } = useListOrganizationsQuery()
   const [images, setImages] = useState<Array<{ id: string; image: string }>>([]);
   const [templates, setTemplates] = useState<Array<{ id: string; name: string; description: string }>>([]);
@@ -61,7 +63,7 @@ export function CreateProject() {
           },
         },
       }).then(resp => {
-        if(resp) {
+        if (resp) {
           nav(`/projects`);
         }
       }).catch(error => {
@@ -73,7 +75,7 @@ export function CreateProject() {
   // const templateResults = useAuthQuery(getProjectTemplates, {
   //   variables: { organizationId: currentOrganization?.id },
   // });
-  
+
   // useEffect(() => {
   //   if (templateResults.data) {
   //     setTemplates(templateResults.data.projectTemplates);
@@ -111,31 +113,31 @@ export function CreateProject() {
               {
                 organizationData && organizationData.listOrganizations ? (
                   <Grid item xs={3}>
-                  <FormControl fullWidth>
-                    <InputLabel id="select-owner-label">Owner</InputLabel>
-                    <Select
-                      variant="outlined"
-                      fullWidth
-                      id="ownerId"
-                      labelId="select-owner-label"
-                      label="Owner"
-                      onChange={e => {
-                        formik.handleChange(e)
-                        const newValue = (e.target as HTMLInputElement).value
-                        setFieldValue('ownerId', newValue)
-                      }}
-                      value={formik.values.ownerId}
-                    >
-                      {
-                        organizationData.listOrganizations.map(organization => (
-                          <MenuItem data-type="organization" value={organization._id} key={organization._id}>
-                            {organization.name}
-                          </MenuItem>
-                        ))
-                      }
-                    </Select>
-                  </FormControl>
-                </Grid>
+                    <FormControl fullWidth>
+                      <InputLabel id="select-owner-label">Owner</InputLabel>
+                      <Select
+                        variant="outlined"
+                        fullWidth
+                        id="ownerId"
+                        labelId="select-owner-label"
+                        label="Owner"
+                        onChange={e => {
+                          formik.handleChange(e)
+                          const newValue = (e.target as HTMLInputElement).value
+                          setFieldValue('ownerId', newValue)
+                        }}
+                        value={formik.values.ownerId}
+                      >
+                        {
+                          organizationData.listOrganizations.map(organization => (
+                            <MenuItem data-type="organization" value={organization._id} key={organization._id}>
+                              {organization.name}
+                            </MenuItem>
+                          ))
+                        }
+                      </Select>
+                    </FormControl>
+                  </Grid>
                 ) : (
                   <></>
                 )
