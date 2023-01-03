@@ -25,23 +25,24 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  ToggleButtonGroup, 
+  ToggleButtonGroup,
   ToggleButton
 } from "@mui/material"
-import { 
-  Search as SearchIcon, 
-  ViewList as ViewListIcon, 
-  ViewModule as ViewModuleIcon ,
+import {
+  Search as SearchIcon,
+  ViewList as ViewListIcon,
+  ViewModule as ViewModuleIcon,
   Delete as DeleteIcon,
   Receipt as ReceiptIcon,
   KeyboardArrowDown as KeyboardArrowDownIcon,
   KeyboardArrowUp as KeyboardArrowUpIcon,
-  Visibility, 
+  Visibility,
   VisibilityOff
 } from '@mui/icons-material'
 import { NoProjects } from "./NoProjects";
 import { ProjectCard } from "./ProjectCard";
 import { useDeleteProjectMutation, useListProjectsQuery, useMeQuery } from "../../generated/graphql";
+import './Projects.css'
 
 interface ProjectTableRowProps {
   id: string;
@@ -134,15 +135,15 @@ function ProjectView({ viewType, projectAccesses, onDelete }: IProjectViewProp) 
     case "grid": {
       return (
         <Grid container spacing={3}>
-          <div className='project-card-wrapper'>
-            {projectAccesses.map((projectAccess, index) => (
+          {projectAccesses.map((projectAccess, index) => (
+            <Grid item className="project-card-wrapper">
               <ProjectCard
                 key={index}
                 project={projectAccess}
                 onDelete={onDelete}
               />
-            ))}
-          </div>
+            </Grid>
+          ))}
         </Grid>
       );
     }
@@ -375,26 +376,24 @@ export function Projects() {
           </Button>
         </div>
       </div>
-      <Box>
-        {!projectsData?.listProjects ||
+      {!projectsData?.listProjects ||
         projectsData.listProjects.length === 0 ? (
-          <div>Currently no projects to diplay</div>
-        ) : (
-          viewType && (
-            <ProjectView
-              viewType={viewType}
-              projectAccesses={projectsData!.listProjects}
-              onDelete={(key) => {
-                const project = projectsData!.listProjects.find(
-                  (fc) => fc._id === key
-                );
-                setProjectToDelete(project);
-                setOpenDeleteProjectDialog(true);
-              }}
-            />
-          )
-        )}
-      </Box>
+        <div>Currently no projects to diplay</div>
+      ) : (
+        viewType && (
+          <ProjectView
+            viewType={viewType}
+            projectAccesses={projectsData!.listProjects}
+            onDelete={(key) => {
+              const project = projectsData!.listProjects.find(
+                (fc) => fc._id === key
+              );
+              setProjectToDelete(project);
+              setOpenDeleteProjectDialog(true);
+            }}
+          />
+        )
+      )}
 
       <Dialog
         open={openDeleteProjectDialog}
