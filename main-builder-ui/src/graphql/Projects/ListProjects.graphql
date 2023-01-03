@@ -2,6 +2,8 @@ query ListProjects {
   listProjects {
     _id
     projectName
+    createdAt
+    updatedAt
     heroImage {
       path
     }

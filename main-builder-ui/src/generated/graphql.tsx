@@ -281,11 +281,13 @@ export type Project = {
   _id: Scalars['ObjectId'];
   appConfig: Array<AppConfig>;
   appId: Scalars['String'];
+  createdAt: Scalars['DateTime'];
   heroImage?: Maybe<HeroImage>;
   organization: Organization;
   projectName: Scalars['String'];
   serverConfig: Array<ServerConfig>;
   teams: Array<Team>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
   users: Array<User>;
 };
 
@@ -441,7 +443,7 @@ export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject: an
 export type ListProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ListProjectsQuery = { __typename?: 'Query', listProjects: Array<{ __typename?: 'Project', _id: any, projectName: string, heroImage?: { __typename?: 'HeroImage', path: string } | null, appConfig: Array<{ __typename?: 'AppConfig', _id: any, name: string, description: string }>, serverConfig: Array<{ __typename?: 'ServerConfig', _id: any, name: string, description: string }> }> };
+export type ListProjectsQuery = { __typename?: 'Query', listProjects: Array<{ __typename?: 'Project', _id: any, projectName: string, createdAt: any, updatedAt?: any | null, heroImage?: { __typename?: 'HeroImage', path: string } | null, appConfig: Array<{ __typename?: 'AppConfig', _id: any, name: string, description: string }>, serverConfig: Array<{ __typename?: 'ServerConfig', _id: any, name: string, description: string }> }> };
 
 export type ServerVersionNumberQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -819,6 +821,8 @@ export const ListProjectsDocument = gql`
   listProjects {
     _id
     projectName
+    createdAt
+    updatedAt
     heroImage {
       path
     }

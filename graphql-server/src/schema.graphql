@@ -157,11 +157,13 @@ type Project {
   _id: ObjectId!
   appConfig: [AppConfig!]!
   appId: String!
+  createdAt: DateTime
   heroImage: HeroImage
   organization: Organization!
   projectName: String!
   serverConfig: [ServerConfig!]!
   teams: [Team!]!
+  updatedAt: DateTime
   users: [User!]!
 }
 

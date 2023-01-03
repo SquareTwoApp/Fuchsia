@@ -47,4 +47,12 @@ export class Project {
   @Field((type) => Organization)
   @Property({ ref: () => Organization, required: true })
   organization!: Ref<Organization>;
+
+  @Field(() => Date, { nullable: true })
+  @Property({ nullable: true })
+  createdAt!: Date;
+
+  @Field(() => Date, { nullable: true })
+  @Property({ nullable: true })
+  updatedAt!: Date;
 }
