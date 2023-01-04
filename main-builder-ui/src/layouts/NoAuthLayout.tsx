@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useServerVersionNumberQuery } from '../generated/graphql';
-import bgImage from "../assets/bgtexture1.jpg"
+import bgImage from "../assets/bgtexture2.jpg"
 
 export const NoAuthLayout = () => {
   const { data: serverVersion } = useServerVersionNumberQuery();

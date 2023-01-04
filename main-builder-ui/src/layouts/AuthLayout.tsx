@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, Link as RouterLink } from "react-router-dom";
-import {  
+import {
   Drawer,
   Toolbar,
   Grid,
@@ -45,8 +45,8 @@ export const AuthLayout = () => {
   };
 
   return (
-    
-    <div style={{ display: 'flex'}}>
+
+    <div style={{ display: 'flex' }}>
       <TopBar />
       <Drawer
         anchor="left"
@@ -62,7 +62,7 @@ export const AuthLayout = () => {
         }}
       >
         <Toolbar />
-        <div 
+        <div
         // className={classes.drawerContainer}
         >
           <List>
@@ -81,12 +81,12 @@ export const AuthLayout = () => {
           </List>
         </div>
       </Drawer>
-      <Box 
+      <Box
         sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
       // className={classes.content}
       >
-        <Toolbar />
-        <div>
+        {/* <Toolbar /> */}
+        <div style={{ paddingTop: 30 }}>
           {me ? (
             <Outlet />
           ) : (
@@ -100,7 +100,7 @@ export const AuthLayout = () => {
               <CircularProgress />
             </div>
           )}
-          {}
+          { }
         </div>
       </Box>
     </div>

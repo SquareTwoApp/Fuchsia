@@ -39,11 +39,15 @@ export function ProjectCard({ project }: ProjectCardProps) {
   }, [me, project])
 
   return (
-    <Card style={{ width: '400px', minHeight: '450px', display: 'grid', gridTemplateRows: 'auto auto 1fr auto' }}>
-      {project.heroImage && project.heroImage.path && 
+    <Card style={{ width: '400px', minHeight: '375px', display: 'grid', gridTemplateRows: 'auto auto 1fr auto' }}>
+      {project.heroImage && project.heroImage.path ?
         <CardMedia
           style={{ opacity: hide ? 0.5 : 1, height: 225 }}
-          image={project.heroImage.path} 
+          image={project.heroImage.path}
+          title="Project Image"
+        /> :
+        <CardMedia
+          style={{ opacity: hide ? 0.5 : 1, height: 225, backgroundColor: 'lightgray' }}
           title="Project Image"
         />
       }
