@@ -79,7 +79,6 @@ export function Profile() {
 
   const handleSubmit = (values: ProfileFormFields) => {
     console.log('formfields', values);
-
     const item: UserInput = {
       displayName: values.displayName,
       email: values.email,
@@ -125,13 +124,22 @@ export function Profile() {
                 <Card>
                   <CardContent style={{}}>
                     <IconButton onClick={() => setShowImageModal(true)}>
-                      {preview ?
-                        <img src={newImage} alt="Avatar" style={{ height: 250, width: 250 }} />
-                        :
-                        me.me?.avatar ? <img src={`${process.env.REACT_APP_IMAGES_ENDPOINT}/avatar/${me.me.avatar}`} alt="Avatar" style={{ height: 250, width: 250 }} />
+                      <div style={{ position: "relative" }}>
+                        {preview ?
+                          <img src={newImage} alt="Avatar" style={{ height: 250, width: 250 }} />
                           :
-                          <AccountCircle style={{ height: '250px', width: '250px' }} />
-                      }
+                          (me.me?.avatar ? 
+                            <img src={me.me.avatar} alt="Avatar" style={{ height: 250, width: 250 }} />
+                            :
+                            <AccountCircle style={{ height: '250px', width: '250px' }} />
+                          )
+                        }
+                        {
+                          removeImage && <div style={{ position: "absolute", border:"1px solid rgba(0,0,0,0.5)", borderRadius:150, color:"white", zIndex: 5, background: "rgba(0,0,0,0.5)", top: 0, left: 0, width: "100%", height: "100%", display: "flex", flexDirection: "row", alignItems: "center" }}>
+                            <div style={{textAlign:"center", width: "100%"}}>Image Removed</div>
+                          </div>
+                        }
+                      </div>
                     </IconButton>
                   </CardContent>
                   <CardActions>

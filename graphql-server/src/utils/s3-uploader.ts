@@ -16,12 +16,14 @@ export class S3Uploader {
     return new Promise((resolve, reject) => {
       const fileStream = fs.createReadStream(source);
       fileStream.on("error", (error) => reject(error));
+
       const uploadParams = {
         Bucket: S3_BUCKET_NAME,
         Key: target,
         Body: fileStream,
         ContentType: mimeType,
       };
+
       this.s3.upload(
         uploadParams,
         (error: Error, data: AWS.S3.ManagedUpload.SendData) => {

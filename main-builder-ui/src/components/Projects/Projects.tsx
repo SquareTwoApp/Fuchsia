@@ -33,7 +33,7 @@ import {
   ViewList as ViewListIcon,
   ViewModule as ViewModuleIcon,
   Delete as DeleteIcon,
-  Receipt as ReceiptIcon,
+  OpenInBrowser as OpenInBrowserIcon,
   KeyboardArrowDown as KeyboardArrowDownIcon,
   KeyboardArrowUp as KeyboardArrowUpIcon,
   Visibility,
@@ -42,6 +42,7 @@ import {
 import { NoProjects } from "./NoProjects";
 import { ProjectCard } from "./ProjectCard";
 import { useDeleteProjectMutation, useListProjectsQuery, useMeQuery } from "../../generated/graphql";
+import './Projects.css'
 
 interface ProjectTableRowProps {
   id: string;
@@ -52,6 +53,10 @@ interface ProjectTableRowProps {
 function ProjectRow({ project, id, onDelete }: ProjectTableRowProps) {
   const [open, setOpen] = React.useState(false);
   const nav = useNavigate();
+
+  useEffect(() => {
+    console.log('project', project);
+  }, [project]);
 
   if (!project) {
     return <div />;
@@ -71,10 +76,10 @@ function ProjectRow({ project, id, onDelete }: ProjectTableRowProps) {
         <TableCell>{project.projectName}</TableCell>
         <TableCell>{project.projectCode}</TableCell>
         <TableCell>
-          {new Date(project.createdAt).toLocaleDateString("en-US")}
+          {project.createdAt ? new Date(project.createdAt).toLocaleDateString("en-US") : "--"}
         </TableCell>
         <TableCell>
-          {new Date(project.updatedAt).toLocaleDateString("en-US")}
+          {project.updatedAt ? new Date(project.updatedAt).toLocaleDateString("en-US") : "--"}
         </TableCell>
         <TableCell
           style={{ cursor: "pointer" }}
@@ -82,8 +87,8 @@ function ProjectRow({ project, id, onDelete }: ProjectTableRowProps) {
             nav(`/projects/${id}`);
           }}
         >
-          <IconButton>
-            <ReceiptIcon />
+          <IconButton title="Open Project">
+            <OpenInBrowserIcon />
           </IconButton>
         </TableCell>
         <TableCell
@@ -92,7 +97,7 @@ function ProjectRow({ project, id, onDelete }: ProjectTableRowProps) {
             onDelete(id);
           }}
         >
-          <IconButton>
+          <IconButton title="Permanently Delete Project">
             <DeleteIcon />
           </IconButton>
         </TableCell>

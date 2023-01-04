@@ -113,7 +113,7 @@ export function TopBar() {
             color="inherit"
           >
             {me && me.me && me && me.me.avatar ? (
-              <img alt="avatar" height="40" src={`${process.env.REACT_APP_IMAGES_ENDPOINT}/avatar/${me.me.avatar}`} />
+              <img alt="avatar" height="40" src={me.me.avatar} />
             ) : (
               <AccountCircle />
             )}

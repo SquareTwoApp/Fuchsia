@@ -88,6 +88,14 @@ type EntityModel {
   name: String!
 }
 
+type HeroImage {
+  _id: ObjectId!
+  createdAt: DateTime!
+  modifiedAt: DateTime!
+  owner: User
+  path: String!
+}
+
 type Invitation {
   _id: ObjectId!
   acceptedDate: DateTime
@@ -107,9 +115,11 @@ type LoginOutputType {
 type Mutation {
   acceptInvitaion(invitationId: ObjectId!): Boolean!
   changePassword(newPassword: String!, oldPassword: String!): Boolean!
+  createHeroImage(image: Upload!): HeroImage!
   createOrganization(organization: OrganizationInput!): Organization!
   createProject(project: ProjectInput!): Project!
   createUser(user: UserInput!): User!
+  deleteHeroImage(_id: ObjectId!): Boolean!
   deleteInvitation(email: String!, organizationId: ObjectId!): Boolean!
   deleteOrganization(organizationId: ObjectId!): ObjectId!
   deleteProject(projectId: ObjectId!): ObjectId!
@@ -147,14 +157,18 @@ type Project {
   _id: ObjectId!
   appConfig: [AppConfig!]!
   appId: String!
+  createdAt: DateTime
+  heroImage: HeroImage
   organization: Organization!
   projectName: String!
   serverConfig: [ServerConfig!]!
   teams: [Team!]!
+  updatedAt: DateTime
   users: [User!]!
 }
 
 input ProjectInput {
+  heroImageId: ObjectId!
   organizationId: ObjectId!
   projectDescription: String!
   projectName: String!
@@ -164,6 +178,7 @@ type Query {
   getDockerhubVersions(projectId: ObjectId!, serverConfigId: ObjectId!): [String!]!
   getProject(projectId: ObjectId!): Project!
   invitation(invitationId: ObjectId!): Invitation!
+  listHeroImages: [HeroImage!]
   listOrganizations: [Organization!]!
   listProjects: [Project!]!
   me: User
@@ -189,6 +204,7 @@ type Team {
 }
 
 input UpdateProjectInput {
+  heroImageId: ObjectId
   projectName: String
 }
 

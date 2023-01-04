@@ -19,7 +19,7 @@ export interface ProjectCardProps {
 }
 
 interface IKeyMember {
-  [key: string]: { user: User, captions: string[]}
+  [key: string]: { user: User, captions: string[] }
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
@@ -29,28 +29,32 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const [favorite, setFavorite] = useState(false)
   const nav = useNavigate();
   const [keyMembers, setKeyMembers] = useState<IKeyMember>({})
+
   useEffect(() => {
+    console.log('projec', project);
     if (me) {
       setFavorite(!!me.me?.favorites?.some(f => f === project._id))
       setHide(!!me.me?.hidden?.some(f => f === project._id))
     }
   }, [me, project])
+
   return (
-    <Card style={{ width: '400px', minHeight: '450px', display: 'grid', gridTemplateRows: 'auto auto 1fr auto'}}>
-    <CardMedia
-    style={{ opacity: hide ? 0.5 : 1 }}
-            image={`data:image/jpeg;base64,${project?.image?.image}`}
-            title="Course Image"
-          />
+    <Card style={{ width: '400px', minHeight: '450px', display: 'grid', gridTemplateRows: 'auto auto 1fr auto' }}>
+      {project.heroImage && project.heroImage.path && 
+        <CardMedia
+          style={{ opacity: hide ? 0.5 : 1, height: 225 }}
+          image={project.heroImage.path} 
+          title="Project Image"
+        />
+      }
       <CardHeader
-    style={{ opacity: hide ? 0.5 : 1 }}
+        style={{ opacity: hide ? 0.5 : 1 }}
         title={<span style={{ WebkitBoxOrient: 'vertical', WebkitLineClamp: 2, display: '-webkit-box', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {project?.projectName}
         </span>}
-        subheader={project?.courseCode}
       />
       <CardContent
-    style={{ opacity: hide ? 0.5 : 1 }}>
+        style={{ opacity: hide ? 0.5 : 1 }}>
         <div style={{ display: 'grid', gridAutoFlow: 'row', justifyContent: 'start', gridGap: '1em' }}>
           {
             Object.keys(keyMembers).map(key => (
@@ -62,52 +66,52 @@ export function ProjectCard({ project }: ProjectCardProps) {
       <CardActions>
 
         <IconButton onClick={() => {
-            updateMe({
-              variables: {
-                userInput: {
-                  email: me!.me!.email,
-                  favorites: !favorite ? [...me!.me!.favorites, project._id] : me?.me?.favorites.filter(p => p !== project._id)
-                }
+          updateMe({
+            variables: {
+              userInput: {
+                email: me!.me!.email,
+                favorites: !favorite ? [...me!.me!.favorites, project._id] : me?.me?.favorites.filter(p => p !== project._id)
               }
-            })
+            }
+          })
         }}>
           <Favorite style={{ fill: favorite ? '#B51840' : 'currentColor' }} />
         </IconButton>
         <IconButton
           onClick={() => {
-            nav(`/courses/${project?.id}`);
+            nav(`/projects/${project._id}`);
           }}
         >
           <Edit />
         </IconButton>
         <div style={{ flexGrow: 1 }} />
         <Tooltip title="Hide">
-        <IconButton
-          onClick={() => {
-            updateMe({
-              variables: {
-                userInput: {
-                  email: me!.me!.email,
-                  hidden: !hide ? [...me!.me!.hidden, project._id] : me?.me?.hidden.filter(p => p !== project._id)
+          <IconButton
+            onClick={() => {
+              updateMe({
+                variables: {
+                  userInput: {
+                    email: me!.me!.email,
+                    hidden: !hide ? [...me!.me!.hidden, project._id] : me?.me?.hidden.filter(p => p !== project._id)
+                  }
                 }
-              }
-            })
-          }}>
+              })
+            }}>
             {
               hide ?
-              <VisibilityOff /> 
-              :
-              <Visibility />
+                <VisibilityOff />
+                :
+                <Visibility />
             }
-        </IconButton>
+          </IconButton>
         </Tooltip>
         <Tooltip title="Settings">
-        <IconButton
-          onClick={() => {
-            nav(`/projects/${project?.id}/settings`);
-          }}>
-          <Settings />
-        </IconButton>
+          <IconButton
+            onClick={() => {
+              nav(`/projects/${project._id}/settings`);
+            }}>
+            <Settings />
+          </IconButton>
         </Tooltip>
       </CardActions>
     </Card>

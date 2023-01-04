@@ -105,6 +105,15 @@ export type EntityModel = {
   name: Scalars['String'];
 };
 
+export type HeroImage = {
+  __typename?: 'HeroImage';
+  _id: Scalars['ObjectId'];
+  createdAt: Scalars['DateTime'];
+  modifiedAt: Scalars['DateTime'];
+  owner?: Maybe<User>;
+  path: Scalars['String'];
+};
+
 export type Invitation = {
   __typename?: 'Invitation';
   _id: Scalars['ObjectId'];
@@ -128,9 +137,11 @@ export type Mutation = {
   __typename?: 'Mutation';
   acceptInvitaion: Scalars['Boolean'];
   changePassword: Scalars['Boolean'];
+  createHeroImage: HeroImage;
   createOrganization: Organization;
   createProject: Project;
   createUser: User;
+  deleteHeroImage: Scalars['Boolean'];
   deleteInvitation: Scalars['Boolean'];
   deleteOrganization: Scalars['ObjectId'];
   deleteProject: Scalars['ObjectId'];
@@ -157,6 +168,11 @@ export type MutationChangePasswordArgs = {
 };
 
 
+export type MutationCreateHeroImageArgs = {
+  image: Scalars['Upload'];
+};
+
+
 export type MutationCreateOrganizationArgs = {
   organization: OrganizationInput;
 };
@@ -169,6 +185,11 @@ export type MutationCreateProjectArgs = {
 
 export type MutationCreateUserArgs = {
   user: UserInput;
+};
+
+
+export type MutationDeleteHeroImageArgs = {
+  _id: Scalars['ObjectId'];
 };
 
 
@@ -260,14 +281,18 @@ export type Project = {
   _id: Scalars['ObjectId'];
   appConfig: Array<AppConfig>;
   appId: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  heroImage?: Maybe<HeroImage>;
   organization: Organization;
   projectName: Scalars['String'];
   serverConfig: Array<ServerConfig>;
   teams: Array<Team>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
   users: Array<User>;
 };
 
 export type ProjectInput = {
+  heroImageId: Scalars['ObjectId'];
   organizationId: Scalars['ObjectId'];
   projectDescription: Scalars['String'];
   projectName: Scalars['String'];
@@ -278,6 +303,7 @@ export type Query = {
   getDockerhubVersions: Array<Scalars['String']>;
   getProject: Project;
   invitation: Invitation;
+  listHeroImages?: Maybe<Array<HeroImage>>;
   listOrganizations: Array<Organization>;
   listProjects: Array<Project>;
   me?: Maybe<User>;
@@ -321,6 +347,7 @@ export type Team = {
 };
 
 export type UpdateProjectInput = {
+  heroImageId?: InputMaybe<Scalars['ObjectId']>;
   projectName?: InputMaybe<Scalars['String']>;
 };
 
@@ -350,6 +377,25 @@ export type UserInput = {
   removeAvatar?: InputMaybe<Scalars['Boolean']>;
   uploadFile?: InputMaybe<Scalars['Upload']>;
 };
+
+export type CreateHeroImageMutationVariables = Exact<{
+  image: Scalars['Upload'];
+}>;
+
+
+export type CreateHeroImageMutation = { __typename?: 'Mutation', createHeroImage: { __typename?: 'HeroImage', _id: any, path: string } };
+
+export type DeleteHeroImageMutationVariables = Exact<{
+  id: Scalars['ObjectId'];
+}>;
+
+
+export type DeleteHeroImageMutation = { __typename?: 'Mutation', deleteHeroImage: boolean };
+
+export type ListHeroImagesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ListHeroImagesQuery = { __typename?: 'Query', listHeroImages?: Array<{ __typename?: 'HeroImage', _id: any, path: string }> | null };
 
 export type DeleteInvitationMutationVariables = Exact<{
   email: Scalars['String'];
@@ -397,7 +443,7 @@ export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject: an
 export type ListProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ListProjectsQuery = { __typename?: 'Query', listProjects: Array<{ __typename?: 'Project', _id: any, projectName: string, appConfig: Array<{ __typename?: 'AppConfig', _id: any, name: string, description: string }>, serverConfig: Array<{ __typename?: 'ServerConfig', _id: any, name: string, description: string }> }> };
+export type ListProjectsQuery = { __typename?: 'Query', listProjects: Array<{ __typename?: 'Project', _id: any, projectName: string, createdAt: any, updatedAt?: any | null, heroImage?: { __typename?: 'HeroImage', path: string } | null, appConfig: Array<{ __typename?: 'AppConfig', _id: any, name: string, description: string }>, serverConfig: Array<{ __typename?: 'ServerConfig', _id: any, name: string, description: string }> }> };
 
 export type ServerVersionNumberQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -463,6 +509,106 @@ export type UpdateMeMutationVariables = Exact<{
 export type UpdateMeMutation = { __typename?: 'Mutation', updateMe: { __typename?: 'User', _id: any, email: string, userRole: string, avatar?: string | null, displayName?: string | null, favorites: Array<any>, hidden: Array<any>, organizations: Array<{ __typename?: 'Organization', _id: any, name: string }> } };
 
 
+export const CreateHeroImageDocument = gql`
+    mutation CreateHeroImage($image: Upload!) {
+  createHeroImage(image: $image) {
+    _id
+    path
+  }
+}
+    `;
+export type CreateHeroImageMutationFn = Apollo.MutationFunction<CreateHeroImageMutation, CreateHeroImageMutationVariables>;
+
+/**
+ * __useCreateHeroImageMutation__
+ *
+ * To run a mutation, you first call `useCreateHeroImageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateHeroImageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createHeroImageMutation, { data, loading, error }] = useCreateHeroImageMutation({
+ *   variables: {
+ *      image: // value for 'image'
+ *   },
+ * });
+ */
+export function useCreateHeroImageMutation(baseOptions?: Apollo.MutationHookOptions<CreateHeroImageMutation, CreateHeroImageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateHeroImageMutation, CreateHeroImageMutationVariables>(CreateHeroImageDocument, options);
+      }
+export type CreateHeroImageMutationHookResult = ReturnType<typeof useCreateHeroImageMutation>;
+export type CreateHeroImageMutationResult = Apollo.MutationResult<CreateHeroImageMutation>;
+export type CreateHeroImageMutationOptions = Apollo.BaseMutationOptions<CreateHeroImageMutation, CreateHeroImageMutationVariables>;
+export const DeleteHeroImageDocument = gql`
+    mutation DeleteHeroImage($id: ObjectId!) {
+  deleteHeroImage(_id: $id)
+}
+    `;
+export type DeleteHeroImageMutationFn = Apollo.MutationFunction<DeleteHeroImageMutation, DeleteHeroImageMutationVariables>;
+
+/**
+ * __useDeleteHeroImageMutation__
+ *
+ * To run a mutation, you first call `useDeleteHeroImageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteHeroImageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteHeroImageMutation, { data, loading, error }] = useDeleteHeroImageMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteHeroImageMutation(baseOptions?: Apollo.MutationHookOptions<DeleteHeroImageMutation, DeleteHeroImageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteHeroImageMutation, DeleteHeroImageMutationVariables>(DeleteHeroImageDocument, options);
+      }
+export type DeleteHeroImageMutationHookResult = ReturnType<typeof useDeleteHeroImageMutation>;
+export type DeleteHeroImageMutationResult = Apollo.MutationResult<DeleteHeroImageMutation>;
+export type DeleteHeroImageMutationOptions = Apollo.BaseMutationOptions<DeleteHeroImageMutation, DeleteHeroImageMutationVariables>;
+export const ListHeroImagesDocument = gql`
+    query ListHeroImages {
+  listHeroImages {
+    _id
+    path
+  }
+}
+    `;
+
+/**
+ * __useListHeroImagesQuery__
+ *
+ * To run a query within a React component, call `useListHeroImagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListHeroImagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListHeroImagesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListHeroImagesQuery(baseOptions?: Apollo.QueryHookOptions<ListHeroImagesQuery, ListHeroImagesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListHeroImagesQuery, ListHeroImagesQueryVariables>(ListHeroImagesDocument, options);
+      }
+export function useListHeroImagesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListHeroImagesQuery, ListHeroImagesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListHeroImagesQuery, ListHeroImagesQueryVariables>(ListHeroImagesDocument, options);
+        }
+export type ListHeroImagesQueryHookResult = ReturnType<typeof useListHeroImagesQuery>;
+export type ListHeroImagesLazyQueryHookResult = ReturnType<typeof useListHeroImagesLazyQuery>;
+export type ListHeroImagesQueryResult = Apollo.QueryResult<ListHeroImagesQuery, ListHeroImagesQueryVariables>;
 export const DeleteInvitationDocument = gql`
     mutation DeleteInvitation($email: String!, $organizationId: ObjectId!) {
   deleteInvitation(email: $email, organizationId: $organizationId)
@@ -675,6 +821,11 @@ export const ListProjectsDocument = gql`
   listProjects {
     _id
     projectName
+    createdAt
+    updatedAt
+    heroImage {
+      path
+    }
     appConfig {
       _id
       name

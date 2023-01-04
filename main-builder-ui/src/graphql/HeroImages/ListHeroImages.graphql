@@ -1,0 +1,6 @@
+query ListHeroImages {
+  listHeroImages {
+    _id
+    path
+  }
+}
