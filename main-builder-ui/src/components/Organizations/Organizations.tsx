@@ -1,3 +1,4 @@
+import { Button } from "@mui/material";
 import { useNavigate, useNavigation } from "react-router-dom";
 import { useListOrganizationsQuery } from "../../generated/graphql";
 
@@ -17,11 +18,18 @@ export function Organizations() {
   return (
     <div>
       <h1>Organizations</h1>
-      <button onClick={() => nav('/organization/create')}>New Organization</button>
-      <div>
+      <Button
+        color="primary"
+        variant="contained"
+        onClick={() => nav('/organization/create')}
+      >
+        + New Organization
+      </Button>
+      {/* <button onClick={() => nav('/organization/create')}>New Organization</button> */}
+      <div style={{ marginTop: 12 }}>
         {OrganizationsData &&
-        OrganizationsData.listOrganizations &&
-        OrganizationsData.listOrganizations.length > 1 ? (
+          OrganizationsData.listOrganizations &&
+          OrganizationsData.listOrganizations.length > 1 ? (
           <div>
             {OrganizationsData.listOrganizations
               .filter((o) => !o.isPersonal)

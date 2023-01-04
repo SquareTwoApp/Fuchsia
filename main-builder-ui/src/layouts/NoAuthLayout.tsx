@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useServerVersionNumberQuery } from '../generated/graphql';
+import bgImage from "../assets/bgtexture1.jpg"
 
 export const NoAuthLayout = () => {
   const { data: serverVersion } = useServerVersionNumberQuery();
@@ -13,11 +14,11 @@ export const NoAuthLayout = () => {
   }, [serverVersion])
 
   return (
-    <div className="public-layout">
+    <div className="public-layout" style={{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover' }}>
       <div className="body-container">
         <Outlet />
         <div className="fluid-wrapper" style={{ alignItems: "flex-start", textAlign: "center" }}>
-          <div style={{ fontSize: "0.875em" }}>
+          <div style={{ fontSize: "0.875em", backgroundColor: '#fff', opacity: 0.9 }}>
             <span>{clientVersionNumber}</span>
             {serverVersionNumber && <span>&nbsp;|&nbsp;</span>}
             <span>{serverVersionNumber}</span>

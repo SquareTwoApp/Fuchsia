@@ -10,6 +10,7 @@ import { useSnackbar } from "notistack";
 import { Visibility, VisibilityOff, Mail, Lock } from "@mui/icons-material";
 import { Panel } from "./Panel";
 import './Authentication.css'
+import bgImage from "../../assets/bgtexture1.jpg"
 
 export function Login() {
   const { login, loginLoading, loginFailed, isLoggedIn } = useAuth();
@@ -48,7 +49,7 @@ export function Login() {
   }
 
   return (
-    <div className="ctn">
+    <div className="ctn" style={{}}>
       <Panel
         rightContent={{
           title: "Welcome back",
